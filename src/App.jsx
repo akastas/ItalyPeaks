@@ -237,17 +237,20 @@ export default function App() {
     if (mode === 'study') {
       setSelectedRegionId(id);
     } else if (mode === 'quiz' && quizStarted && !quizFinished && answeredState === null) {
-      setSelectedAnswerId(id);
-      const correctAnswerId = questions[currentQuestionIndex];
-      const isCorrect = id === correctAnswerId;
-
-      if (isCorrect) {
-        setScore(prev => prev + 1);
-        setAnsweredState('correct');
-        playSynthSound('correct');
+      if (selectedAnswerId !== id) {
+        setSelectedAnswerId(id);
       } else {
-        setAnsweredState('incorrect');
-        playSynthSound('incorrect');
+        const correctAnswerId = questions[currentQuestionIndex];
+        const isCorrect = id === correctAnswerId;
+
+        if (isCorrect) {
+          setScore(prev => prev + 1);
+          setAnsweredState('correct');
+          playSynthSound('correct');
+        } else {
+          setAnsweredState('incorrect');
+          playSynthSound('incorrect');
+        }
       }
     }
   };
@@ -276,73 +279,73 @@ export default function App() {
 
   // Custom styling paths based on selection/game state
   const getPathClass = (regionId) => {
-    const baseClass = "transition-all duration-300 stroke-[1.2px] stroke-emerald-950/40 cursor-pointer outline-none ";
+    const baseClass = "transition-all duration-300 stroke-[1px] stroke-stone-300 cursor-pointer outline-none ";
 
     if (mode === 'study') {
       if (selectedRegionId === regionId) {
-        return baseClass + "fill-emerald-400 filter drop-shadow-[0_0_10px_rgba(52,211,153,0.5)]";
+        return baseClass + "fill-amber-200/80 stroke-amber-700 stroke-[1.5px]";
       }
-      return baseClass + "fill-emerald-950/40 hover:fill-emerald-400/30";
+      return baseClass + "fill-stone-100 hover:fill-amber-100/60";
     }
 
     if (mode === 'quiz') {
       if (!quizStarted || quizFinished) {
-        return baseClass + "fill-emerald-950/30";
+        return baseClass + "fill-stone-50";
       }
 
       const correctAnswerId = questions[currentQuestionIndex];
 
       if (answeredState !== null) {
         if (regionId === correctAnswerId) {
-          return baseClass + "fill-emerald-400 filter drop-shadow-[0_0_10px_rgba(52,211,153,0.5)]";
+          return baseClass + "fill-emerald-100/90 stroke-emerald-600 stroke-[1.5px]";
         }
         if (selectedAnswerId === regionId && answeredState === 'incorrect') {
-          return baseClass + "fill-rose-500 filter drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]";
+          return baseClass + "fill-rose-100/90 stroke-rose-600 stroke-[1.5px]";
         }
       }
 
       if (selectedAnswerId === regionId) {
-        return baseClass + "fill-amber-400";
+        return baseClass + "fill-amber-200/80 stroke-amber-600 stroke-[1.5px]";
       }
 
-      return baseClass + "fill-emerald-950/40 hover:fill-emerald-400/15";
+      return baseClass + "fill-stone-100 hover:fill-amber-100/40";
     }
 
-    return baseClass + "fill-emerald-950/40";
+    return baseClass + "fill-stone-100";
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-black pb-4 text-slate-200">
+    <div className="min-h-screen flex flex-col justify-between selection:bg-amber-200 selection:text-amber-900 pb-4 text-stone-800">
       
       {/* Top Header */}
-      <header className="glass-panel border-b border-emerald-900/30 py-4 px-6 relative z-10">
+      <header className="glass-panel border-b border-stone-200 py-4 px-6 relative z-10">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-emerald-950/80 border border-emerald-400/30 rounded-lg text-emerald-400 animate-float">
+            <div className="p-2 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 animate-float shadow-sm">
               <Mountain size={28} />
             </div>
             <div>
-              <h1 className="text-xl md:text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-                Vette d'Italia <span className="text-emerald-400 font-normal text-xs bg-emerald-950 border border-emerald-500/20 px-2 py-0.5 rounded-full">Summit Challenge</span>
+              <h1 className="text-xl md:text-2xl font-black tracking-tight text-stone-900 flex items-center gap-2">
+                Vette d'Italia <span className="text-amber-800 font-semibold text-xs bg-amber-100/80 border border-amber-200 px-2 py-0.5 rounded-full">Summit Challenge</span>
               </h1>
-              <p className="text-[10px] md:text-xs font-mono text-emerald-500/80 tracking-widest uppercase">Esploratore delle Cime Regionali</p>
+              <p className="text-[10px] md:text-xs font-mono text-amber-800/80 tracking-widest uppercase">Esploratore delle Cime Regionali</p>
             </div>
           </div>
           
-          <div className="hidden md:flex gap-1 bg-emerald-950/80 border border-emerald-900/40 p-1 rounded-lg">
+          <div className="hidden md:flex gap-1 bg-stone-100 border border-stone-200 p-1 rounded-lg">
             <button 
               onClick={() => { if (!quizStarted) { setMode('study'); setSelectedRegionId(null); } }}
               disabled={quizStarted}
-              className={`px-4 py-1.5 rounded text-xs font-semibold font-mono tracking-wider transition-all
-                ${mode === 'study' ? 'bg-emerald-500 text-black shadow-md' : 'text-slate-400 hover:text-white disabled:opacity-50'}`}
+              className={`px-4 py-1.5 rounded text-xs font-semibold font-mono tracking-wider transition-all cursor-pointer
+                ${mode === 'study' ? 'bg-amber-700 text-white shadow-sm' : 'text-stone-500 hover:text-stone-800 disabled:opacity-50'}`}
             >
               STUDY MAP
             </button>
             <button 
               onClick={() => { if (!quizStarted) { setMode('quiz'); } }}
               disabled={quizStarted}
-              className={`px-4 py-1.5 rounded text-xs font-semibold font-mono tracking-wider transition-all
-                ${mode === 'quiz' ? 'bg-emerald-500 text-black shadow-md' : 'text-slate-400 hover:text-white disabled:opacity-50'}`}
+              className={`px-4 py-1.5 rounded text-xs font-semibold font-mono tracking-wider transition-all cursor-pointer
+                ${mode === 'quiz' ? 'bg-amber-700 text-white shadow-sm' : 'text-stone-500 hover:text-stone-800 disabled:opacity-50'}`}
             >
               QUIZ TRAINING
             </button>
@@ -358,7 +361,7 @@ export default function App() {
           <div className="w-full max-w-[380px] aspect-[560/663] relative">
             <svg 
               viewBox="0 0 560.512 663.114" 
-              className="w-full h-full drop-shadow-[0_15px_30px_rgba(0,0,0,0.7)]"
+              className="w-full h-full drop-shadow-[0_10px_25px_rgba(45,39,34,0.12)]"
               xmlns="http://www.w3.org/2000/svg"
             >
               <g id="regions-map">
@@ -375,7 +378,7 @@ export default function App() {
             </svg>
           </div>
           
-          <div className="absolute bottom-4 left-4 bg-emerald-950/60 backdrop-blur border border-emerald-900/30 px-3 py-1.5 rounded-lg text-[10px] font-mono text-emerald-400 flex items-center gap-1.5">
+          <div className="absolute bottom-4 left-4 bg-white/80 backdrop-blur border border-stone-200 px-3 py-1.5 rounded-lg text-[10px] font-mono text-stone-600 flex items-center gap-1.5 shadow-sm">
             <Map size={11} /> 20 REGIONI D'ITALIA
           </div>
         </section>
@@ -385,18 +388,18 @@ export default function App() {
           
           {/* Mobile view switcher for mode (shows only on mobile when not in active quiz) */}
           {!quizStarted && (
-            <div className="flex md:hidden bg-emerald-950/40 border border-emerald-900/30 p-1 rounded-xl mb-4 gap-1">
+            <div className="flex md:hidden bg-stone-100 border border-stone-200 p-1 rounded-xl mb-4 gap-1">
               <button 
                 onClick={() => setMode('study')}
-                className={`flex-1 text-center py-2.5 rounded-lg text-xs font-bold tracking-wider transition-all
-                  ${mode === 'study' ? 'bg-emerald-500 text-black font-extrabold' : 'text-slate-400'}`}
+                className={`flex-1 text-center py-2.5 rounded-lg text-xs font-bold tracking-wider transition-all cursor-pointer
+                  ${mode === 'study' ? 'bg-amber-700 text-white font-extrabold shadow-sm' : 'text-stone-500'}`}
               >
                 STUDIA MAPPA
               </button>
               <button 
                 onClick={() => setMode('quiz')}
-                className={`flex-1 text-center py-2.5 rounded-lg text-xs font-bold tracking-wider transition-all
-                  ${mode === 'quiz' ? 'bg-emerald-500 text-black font-extrabold' : 'text-slate-400'}`}
+                className={`flex-1 text-center py-2.5 rounded-lg text-xs font-bold tracking-wider transition-all cursor-pointer
+                  ${mode === 'quiz' ? 'bg-amber-700 text-white font-extrabold shadow-sm' : 'text-stone-500'}`}
               >
                 SFIDA QUIZ
               </button>
@@ -416,45 +419,45 @@ export default function App() {
                     className="space-y-6 flex-1"
                   >
                     <div>
-                      <span className="text-[10px] font-mono text-emerald-400 font-extrabold tracking-wider uppercase">Regione</span>
-                      <h2 className="text-3xl font-extrabold tracking-tight text-white mt-0.5">{selectedRegion.name}</h2>
+                      <span className="text-[10px] font-mono text-amber-800 font-extrabold tracking-wider uppercase">Regione</span>
+                      <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 mt-0.5">{selectedRegion.name}</h2>
                     </div>
 
                     <div className="space-y-4">
                       {/* Peak card */}
-                      <div className="bg-emerald-950/20 border border-emerald-900/20 rounded-xl p-4 space-y-1">
-                        <span className="text-[9px] font-mono text-emerald-400/80 uppercase tracking-widest flex items-center gap-1.5">
+                      <div className="bg-amber-50/50 border border-amber-900/5 rounded-xl p-4 space-y-1">
+                        <span className="text-[9px] font-mono text-amber-800 uppercase tracking-widest flex items-center gap-1.5">
                           <Mountain size={11} /> Cima Più Alta
                         </span>
-                        <div className="text-xl font-extrabold text-emerald-300">{selectedRegion.peak}</div>
+                        <div className="text-xl font-extrabold text-amber-950">{selectedRegion.peak}</div>
                       </div>
 
                       {/* Stats grid */}
                       <div className="grid grid-cols-2 gap-3">
-                        <div className="bg-emerald-950/20 border border-emerald-900/20 rounded-xl p-3.5 space-y-0.5">
-                          <span className="text-[9px] font-mono text-slate-400 uppercase tracking-wider">Massiccio</span>
-                          <div className="text-xs font-bold text-white truncate">{selectedRegion.massif}</div>
+                        <div className="bg-stone-50 border border-stone-200/60 rounded-xl p-3.5 space-y-0.5">
+                          <span className="text-[9px] font-mono text-stone-500 uppercase tracking-wider">Massiccio</span>
+                          <div className="text-xs font-bold text-stone-800 truncate">{selectedRegion.massif}</div>
                         </div>
-                        <div className="bg-emerald-950/20 border border-emerald-900/20 rounded-xl p-3.5 space-y-0.5">
-                          <span className="text-[9px] font-mono text-slate-400 uppercase tracking-wider">Altezza</span>
-                          <div className="text-base font-extrabold font-mono text-emerald-400">{selectedRegion.height.toLocaleString()} m</div>
+                        <div className="bg-stone-50 border border-stone-200/60 rounded-xl p-3.5 space-y-0.5">
+                          <span className="text-[9px] font-mono text-stone-500 uppercase tracking-wider">Altezza</span>
+                          <div className="text-base font-extrabold font-mono text-amber-800">{selectedRegion.height.toLocaleString()} m</div>
                         </div>
                       </div>
 
                       {/* Description */}
-                      <div className="bg-emerald-950/10 border border-emerald-950/30 rounded-xl p-4 text-xs font-sans text-slate-300 leading-relaxed">
+                      <div className="bg-stone-50/40 border border-stone-200/40 rounded-xl p-4 text-xs font-sans text-stone-600 leading-relaxed">
                         {selectedRegion.notes}
                       </div>
                     </div>
                   </motion.div>
                 ) : (
                   <div className="flex-1 flex flex-col items-center justify-center text-center space-y-4 py-16">
-                    <div className="p-4 bg-emerald-950/40 rounded-full border border-emerald-500/10 text-emerald-400/40 animate-pulse">
+                    <div className="p-4 bg-amber-50 rounded-full border border-amber-200/50 text-amber-700/60 animate-pulse shadow-sm">
                       <Compass size={40} />
                     </div>
                     <div>
-                      <h3 className="text-base font-bold text-white">Esplora la Mappa</h3>
-                      <p className="text-xs text-slate-400 mt-2 max-w-[220px] mx-auto leading-relaxed">
+                      <h3 className="text-base font-bold text-stone-850">Esplora la Mappa</h3>
+                      <p className="text-xs text-stone-500 mt-2 max-w-[220px] mx-auto leading-relaxed">
                         Tocca una regione sulla mappa d'Italia per scoprire la sua vetta più alta, la quota e le note geografiche.
                       </p>
                     </div>
@@ -465,7 +468,7 @@ export default function App() {
               {selectedRegion && (
                 <button
                   onClick={() => setSelectedRegionId(null)}
-                  className="w-full mt-6 py-2 bg-emerald-950/40 border border-emerald-900/20 rounded-xl text-xs font-mono text-slate-400 hover:text-white hover:border-emerald-500/30 transition-all cursor-pointer"
+                  className="w-full mt-6 py-2 bg-stone-100 border border-stone-200 rounded-xl text-xs font-mono text-stone-500 hover:text-stone-850 hover:border-stone-300 transition-all cursor-pointer"
                 >
                   Rilascia Selezione
                 </button>
@@ -480,19 +483,19 @@ export default function App() {
               {/* Ready to start quiz screen */}
               {!quizStarted && (
                 <div className="flex-1 flex flex-col items-center justify-center text-center space-y-6 py-8">
-                  <div className="p-4 bg-emerald-950/40 rounded-full border border-emerald-500/10 text-emerald-400">
+                  <div className="p-4 bg-amber-50 rounded-full border border-amber-200 text-amber-700 shadow-sm">
                     <Trophy size={48} />
                   </div>
                   <div>
-                    <h3 className="text-xl font-extrabold text-white">Pronto per la Sfida?</h3>
-                    <p className="text-xs text-slate-400 mt-2 max-w-[240px] mx-auto leading-relaxed font-sans">
+                    <h3 className="text-xl font-extrabold text-stone-900">Pronto per la Sfida?</h3>
+                    <p className="text-xs text-stone-500 mt-2 max-w-[240px] mx-auto leading-relaxed font-sans">
                       Ti verranno chieste le posizioni di tutte le 20 vette regionali più alte d'Italia. Cerca di totalizzare il punteggio massimo!
                     </p>
                   </div>
 
                   <button
                     onClick={startNewQuiz}
-                    className="w-full bg-emerald-400 text-black py-3 rounded-xl font-bold text-sm hover:bg-emerald-300 transition-all shadow-[0_4px_15px_rgba(52,211,153,0.2)] cursor-pointer"
+                    className="w-full bg-amber-700 text-white py-3 rounded-xl font-bold text-sm hover:bg-amber-800 transition-all shadow-[0_4px_15px_rgba(180,83,9,0.15)] cursor-pointer"
                   >
                     Inizia Quiz
                   </button>
@@ -504,39 +507,50 @@ export default function App() {
                 <div className="flex-1 flex flex-col justify-between">
                   <div className="space-y-6">
                     {/* Status bar */}
-                    <div className="flex justify-between items-center font-mono text-[10px] text-slate-400 border-b border-emerald-900/20 pb-3">
+                    <div className="flex justify-between items-center font-mono text-[10px] text-stone-500 border-b border-stone-200 pb-3">
                       <span>DOMANDA {currentQuestionIndex + 1} / {questions.length}</span>
-                      <span className="text-emerald-400">PUNTEGGIO: {score}</span>
+                      <span className="text-amber-800 font-bold">PUNTEGGIO: {score}</span>
                     </div>
 
                     {/* Question Card */}
                     <div className="space-y-4">
-                      <div className="bg-emerald-950/30 border-l-4 border-emerald-400 p-4 rounded-r-xl space-y-2">
-                        <div className="text-[9px] font-mono text-emerald-400 font-extrabold tracking-widest uppercase">Trova la regione di:</div>
-                        <div className="text-xl font-extrabold text-white">
+                      <div className="bg-amber-50 border-l-4 border-amber-700 p-4 rounded-r-xl space-y-2 shadow-sm">
+                        <div className="text-[9px] font-mono text-amber-800 font-extrabold tracking-widest uppercase">Trova la regione di:</div>
+                        <div className="text-xl font-extrabold text-stone-900">
                           {currentQuizRegion?.peak}
                         </div>
-                        <div className="flex items-center gap-3 text-[10px] font-mono text-slate-400 pt-1">
-                          <span>Gruppo: <strong className="text-slate-200">{currentQuizRegion?.massif}</strong></span>
-                          <span>Altezza: <strong className="text-emerald-400">{currentQuizRegion?.height} m</strong></span>
+                        <div className="flex items-center gap-3 text-[10px] font-mono text-stone-500 pt-1">
+                          <span>Gruppo: <strong className="text-stone-700">{currentQuizRegion?.massif}</strong></span>
+                          <span>Altezza: <strong className="text-amber-800">{currentQuizRegion?.height} m</strong></span>
                         </div>
                       </div>
 
                       {/* Map Prompt */}
                       {answeredState === null ? (
-                        <div className="bg-emerald-950/10 border border-dashed border-emerald-900/30 p-6 rounded-xl text-center">
-                          <p className="text-xs font-sans text-slate-400 animate-pulse">
-                            Seleziona sulla mappa la regione corretta!
-                          </p>
-                        </div>
+                        selectedAnswerId === null ? (
+                          <div className="bg-stone-50 border border-dashed border-stone-300 p-6 rounded-xl text-center">
+                            <p className="text-xs font-sans text-stone-500 animate-pulse">
+                              Tocca sulla mappa la regione corretta!
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="bg-amber-50 border border-amber-200 p-5 rounded-xl text-center space-y-2 shadow-sm">
+                            <p className="text-xs font-sans text-stone-700">
+                              Hai selezionato: <strong className="text-stone-900 font-extrabold">{PEAKS_DATA[selectedAnswerId]?.name}</strong>
+                            </p>
+                            <p className="text-[11px] font-medium text-amber-800 animate-pulse">
+                              Tocca di nuovo la regione selezionata per confermare la risposta.
+                            </p>
+                          </div>
+                        )
                       ) : (
                         <motion.div
                           initial={{ scale: 0.96, opacity: 0 }}
                           animate={{ scale: 1, opacity: 1 }}
                           className={`p-4 rounded-xl border flex items-start gap-3 ${
                             answeredState === 'correct' 
-                              ? 'border-emerald-500/30 bg-emerald-950/20 text-emerald-400' 
-                              : 'border-rose-500/30 bg-rose-950/10 text-rose-400'
+                              ? 'border-emerald-200 bg-emerald-50 text-emerald-800' 
+                              : 'border-rose-200 bg-rose-50 text-rose-800'
                           }`}
                         >
                           <div className="mt-0.5">
@@ -546,7 +560,7 @@ export default function App() {
                             <div className="font-extrabold">
                               {answeredState === 'correct' ? 'Risposta Esatta!' : 'Risposta Errata!'}
                             </div>
-                            <p className="text-slate-400 leading-relaxed text-[11px]">
+                            <p className="text-stone-600 leading-relaxed text-[11px]">
                               {answeredState === 'correct' 
                                 ? `Ottimo lavoro! Il ${currentQuizRegion?.peak} è proprio in ${currentQuizRegion?.name}.`
                                 : `Hai selezionato ${PEAKS_DATA[selectedAnswerId]?.name || 'un\'altra regione'}. La cima si trova in ${currentQuizRegion?.name}.`
@@ -561,7 +575,7 @@ export default function App() {
                   {answeredState !== null && (
                     <button
                       onClick={nextQuestion}
-                      className="w-full mt-6 bg-slate-100 text-black py-3 rounded-xl font-bold text-xs hover:bg-emerald-400 hover:text-black transition-all cursor-pointer"
+                      className="w-full mt-6 bg-stone-800 text-white py-3 rounded-xl font-bold text-xs hover:bg-amber-700 transition-all cursor-pointer"
                     >
                       {currentQuestionIndex + 1 < questions.length ? 'Prossima Domanda' : 'Vedi Risultati'}
                     </button>
@@ -573,35 +587,35 @@ export default function App() {
               {quizFinished && (
                 <div className="flex-1 flex flex-col justify-between py-2">
                   <div className="space-y-6 text-center">
-                    <div className="p-4 bg-emerald-950/40 border border-emerald-500/10 rounded-full inline-block text-emerald-400 animate-bounce">
+                    <div className="p-4 bg-amber-50 border border-amber-200 rounded-full inline-block text-amber-700 animate-bounce shadow-sm">
                       <Award size={48} />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-extrabold text-white">Quiz Completato!</h3>
-                      <p className="text-xs font-mono text-emerald-500/70 mt-1 uppercase tracking-wider">Analisi dei Risultati</p>
+                      <h3 className="text-2xl font-extrabold text-stone-900">Quiz Completato!</h3>
+                      <p className="text-xs font-mono text-amber-800/80 mt-1 uppercase tracking-wider">Analisi dei Risultati</p>
                     </div>
 
                     {/* Result table */}
-                    <div className="grid grid-cols-2 gap-3 bg-emerald-950/30 border border-emerald-900/30 rounded-xl p-4">
+                    <div className="grid grid-cols-2 gap-3 bg-stone-50 border border-stone-200 rounded-xl p-4">
                       <div>
-                        <div className="text-[9px] font-mono text-slate-400">PUNTEGGIO</div>
-                        <div className="text-xl font-bold text-white">{score} / {questions.length}</div>
+                        <div className="text-[9px] font-mono text-stone-500">PUNTEGGIO</div>
+                        <div className="text-xl font-bold text-stone-900">{score} / {questions.length}</div>
                       </div>
                       <div>
-                        <div className="text-[9px] font-mono text-slate-400">PRECISIONE</div>
-                        <div className={`text-xl font-bold ${score >= 16 ? 'text-emerald-400' : score >= 10 ? 'text-amber-400' : 'text-rose-400'}`}>
+                        <div className="text-[9px] font-mono text-stone-500">PRECISIONE</div>
+                        <div className={`text-xl font-bold ${score >= 16 ? 'text-emerald-700' : score >= 10 ? 'text-amber-700' : 'text-rose-700'}`}>
                           {Math.round((score / questions.length) * 100)}%
                         </div>
                       </div>
                     </div>
 
                     {/* Unlock card */}
-                    <div className="bg-emerald-950/20 border border-emerald-900/30 rounded-xl p-4 space-y-1 text-center font-sans">
-                      <div className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest font-black">Grado Raggiunto</div>
-                      <div className="text-lg font-bold text-white mt-1">
+                    <div className="bg-amber-50/50 border border-amber-200 rounded-xl p-4 space-y-1 text-center font-sans">
+                      <div className="text-[10px] font-mono text-amber-800 uppercase tracking-widest font-black">Grado Raggiunto</div>
+                      <div className="text-lg font-bold text-stone-900 mt-1">
                         {getBadge(score).emoji} {getBadge(score).title}
                       </div>
-                      <p className="text-xs text-slate-400 pt-1 leading-relaxed">
+                      <p className="text-xs text-stone-500 pt-1 leading-relaxed">
                         {getBadge(score).desc}
                       </p>
                     </div>
@@ -609,7 +623,7 @@ export default function App() {
 
                   <button
                     onClick={resetQuiz}
-                    className="w-full mt-8 bg-emerald-400 text-black py-3 rounded-xl font-bold text-sm hover:bg-emerald-300 transition-all shadow-[0_4px_15px_rgba(52,211,153,0.2)] cursor-pointer"
+                    className="w-full mt-8 bg-amber-700 text-white py-3 rounded-xl font-bold text-sm hover:bg-amber-800 transition-all shadow-[0_4px_15px_rgba(180,83,9,0.15)] cursor-pointer"
                   >
                     Torna alla Mappa
                   </button>
@@ -624,7 +638,7 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="w-full max-w-6xl mx-auto px-6 pt-4 border-t border-emerald-900/10 text-center text-[10px] font-mono text-slate-500">
+      <footer className="w-full max-w-6xl mx-auto px-6 pt-4 border-t border-stone-200 text-center text-[10px] font-mono text-stone-400">
         SUMMIT QUEST &copy; {new Date().getFullYear()} &bull; MAPPA VETTORIALE INTERATTIVA DELLE MONTAGNE ITALIANE
       </footer>
 
