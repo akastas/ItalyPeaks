@@ -211,6 +211,70 @@ export default function App() {
   const [answeredState, setAnsweredState] = useState(null); // 'correct', 'incorrect', or null
   const [selectedAnswerId, setSelectedAnswerId] = useState(null);
 
+  const [showElevation, setShowElevation] = useState(true);
+
+  // Zoom & Pan State
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
+  const zoomIn = () => {
+    setZoom(prev => Math.min(3, prev + 0.4));
+  };
+
+  const zoomOut = () => {
+    setZoom(prev => {
+      const next = Math.max(1, prev - 0.4);
+      if (next === 1) setPan({ x: 0, y: 0 });
+      return next;
+    });
+  };
+
+  const resetZoom = () => {
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
+  };
+
+  const handleMouseDown = (e) => {
+    if (zoom === 1) return;
+    setIsDragging(true);
+    setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging || zoom === 1) return;
+    setPan({
+      x: e.clientX - dragStart.x,
+      y: e.clientY - dragStart.y
+    });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleTouchStart = (e) => {
+    if (zoom === 1) return;
+    setIsDragging(true);
+    setDragStart({ 
+      x: e.touches[0].clientX - pan.x, 
+      y: e.touches[0].clientY - pan.y 
+    });
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDragging || zoom === 1) return;
+    setPan({
+      x: e.touches[0].clientX - dragStart.x,
+      y: e.touches[0].clientY - dragStart.y
+    });
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+  };
+
   // Badge list based on score
   const getBadge = (finalScore) => {
     if (finalScore === 20) return { title: "Alpinista Leggendario", emoji: "👑", desc: "Hai conquistato tutte le vette d'Italia senza errori!" };
@@ -313,7 +377,7 @@ export default function App() {
       }
     }
 
-    return { fill: getRegionBaseColor(regionId) };
+    return { fill: showElevation ? getRegionBaseColor(regionId) : '#f4eee2' };
   };
 
   const getPathClass = (regionId) => {
@@ -395,14 +459,55 @@ export default function App() {
       <main className="max-w-6xl mx-auto w-full px-4 md:px-6 py-6 flex-1 flex flex-col md:flex-row gap-6 items-stretch min-h-0">
         
         {/* Map Side */}
-        <section className="flex-1 glass-panel p-6 rounded-2xl flex flex-col items-center justify-center relative min-h-[380px] md:min-h-0">
-          <div className="w-full max-w-[380px] aspect-[560/663] relative">
+        <section className="flex-1 glass-panel p-6 rounded-2xl flex flex-col items-center justify-center relative min-h-[380px] md:min-h-0 overflow-hidden">
+          
+          {/* Zoom Controls */}
+          <div className="absolute top-4 right-4 flex flex-col gap-1.5 z-10">
+            <button 
+              onClick={zoomIn}
+              title="Aumenta Zoom"
+              className="w-8 h-8 bg-white/90 backdrop-blur border border-stone-200 hover:bg-amber-50 rounded-lg text-stone-700 shadow-sm transition-all cursor-pointer font-bold flex items-center justify-center text-sm"
+            >
+              +
+            </button>
+            <button 
+              onClick={zoomOut}
+              title="Riduci Zoom"
+              className="w-8 h-8 bg-white/90 backdrop-blur border border-stone-200 hover:bg-amber-50 rounded-lg text-stone-700 shadow-sm transition-all cursor-pointer font-bold flex items-center justify-center text-sm"
+            >
+              -
+            </button>
+            <button 
+              onClick={resetZoom}
+              title="Ripristina Zoom"
+              className="w-8 h-8 bg-white/90 backdrop-blur border border-stone-200 hover:bg-amber-50 rounded-lg text-stone-600 shadow-sm transition-all cursor-pointer flex items-center justify-center text-xs"
+            >
+              ↺
+            </button>
+          </div>
+
+          <div className="w-full max-w-[380px] aspect-[560/663] relative overflow-hidden">
             <svg 
               viewBox="0 0 560.512 663.114" 
-              className="w-full h-full drop-shadow-[0_10px_25px_rgba(45,39,34,0.12)]"
+              className={`w-full h-full drop-shadow-[0_10px_25px_rgba(45,39,34,0.12)] select-none outline-none
+                ${zoom > 1 ? 'cursor-grab active:cursor-grabbing' : ''}`}
               xmlns="http://www.w3.org/2000/svg"
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
             >
-              <g id="regions-map">
+              <g 
+                id="regions-map"
+                style={{ 
+                  transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`, 
+                  transformOrigin: 'center',
+                  transition: isDragging ? 'none' : 'transform 0.15s ease-out'
+                }}
+              >
                 {ITALY_REGIONS_PATHS.map((region) => (
                   <path
                     key={region.id}
@@ -418,13 +523,30 @@ export default function App() {
           </div>
           
           {/* Legend and Region badge row */}
-          <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-6 pt-4 border-t border-stone-200/60">
-            <div className="bg-white/80 backdrop-blur border border-stone-200 px-3 py-1.5 rounded-lg text-[10px] font-mono text-stone-600 flex items-center gap-1.5 shadow-sm self-start sm:self-auto">
-              <Map size={11} /> 20 REGIONI D'ITALIA
+          <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-6 pt-4 border-t border-stone-200/60 relative z-10">
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="bg-white/80 backdrop-blur border border-stone-200 px-3 py-1.5 rounded-lg text-[10px] font-mono text-stone-600 flex items-center gap-1.5 shadow-sm">
+                <Map size={11} /> 20 REGIONI D'ITALIA
+              </div>
+
+              {/* Elevation Toggle */}
+              <div className="flex items-center gap-2 bg-white/80 backdrop-blur border border-stone-200 px-2.5 py-1.5 rounded-lg shadow-sm">
+                <span className="text-[9px] font-mono text-stone-500 uppercase tracking-wider font-extrabold">Colori Altezze</span>
+                <button 
+                  onClick={() => setShowElevation(!showElevation)}
+                  title="Mostra/Nascondi Altezze Vette"
+                  className={`w-7 h-4 rounded-full p-0.5 transition-colors duration-200 focus:outline-none cursor-pointer relative flex items-center
+                    ${showElevation ? 'bg-amber-700' : 'bg-stone-300'}`}
+                >
+                  <div className={`bg-white w-3 h-3 rounded-full shadow-sm transform transition-transform duration-200
+                    ${showElevation ? 'translate-x-3' : 'translate-x-0'}`}
+                  />
+                </button>
+              </div>
             </div>
 
             {/* Elevation Legend */}
-            <div className="flex flex-col gap-1 sm:text-right">
+            <div className={`flex flex-col gap-1 sm:text-right transition-all duration-300 ${showElevation ? 'opacity-100' : 'opacity-30 pointer-events-none'}`}>
               <div className="text-[9px] font-mono text-stone-500 uppercase tracking-wider font-bold">Quota Vetta Principale</div>
               <div className="flex items-center gap-2 justify-start sm:justify-end">
                 <span className="text-[9px] font-mono text-stone-400">1.151m</span>
