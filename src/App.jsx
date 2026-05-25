@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mountain, Trophy, Sparkles, Map, BookOpen, HelpCircle, Compass, Check, X, RotateCcw, Award, ChevronRight } from 'lucide-react';
+import { Mountain, Trophy, Sparkles, Map, BookOpen, HelpCircle, Compass, Check, X, RotateCcw, Award, ChevronRight, Waves } from 'lucide-react';
 import { ITALY_REGIONS_PATHS } from './italyPaths';
 
 // Detailed data for each region's highest peak
@@ -146,6 +146,22 @@ const PEAKS_DATA = {
     notes: "La cima regina delle Dolomiti, situata sul massiccio della Marmolada e ricoperta dal ghiacciaio omonimo."
   }
 };
+
+const RIVERS_DATA = [
+  { name: "Po", length: 652, source: "Pian del Re (Monviso)", mouth: "Mar Adriatico (Delta)", desc: "Il fiume più lungo d'Italia, attraversa tutta la Pianura Padana prima di sfociare in un imponente delta nel Mar Adriatico." },
+  { name: "Adige", length: 410, source: "Passo Resia (Alpi Retiche)", mouth: "Mar Adriatico", desc: "Il secondo fiume italiano per lunghezza. Nasce vicino al confine con l'Austria e attraversa l'Alto Adige, il Trentino e il Veneto." },
+  { name: "Tevere", length: 405, source: "Monte Fumaiolo (Appennino)", mouth: "Mar Tirreno (Ostia)", desc: "Terzo fiume per lunghezza. Storico corso d'acqua di Roma, attraversa l'Appennino scorrendo attraverso Umbria e Lazio." },
+  { name: "Adda", length: 313, source: "Alpi Retiche (Bormio)", mouth: "Fiume Po (tributario)", desc: "Il più lungo affluente del Po, attraversa la Valtellina ed entra nel Lago di Como prima di confluire nel Po nel cremonese." },
+  { name: "Oglio", length: 280, source: "Corno dei Tre Signori (Alpi)", mouth: "Fiume Po (tributario)", desc: "Importante affluente di sinistra del Po, scorre attraverso la Val Camonica, forma il Lago d'Iseo e attraversa la pianura lombarda." }
+];
+
+const LAKES_DATA = [
+  { name: "Lago di Garda (Benaco)", area: 370, depth: 346, regions: "Lombardia, Veneto, Trentino-A.A.", desc: "Il più grande lago d'Italia. Cerniera tra tre regioni, è un lago glaciale noto per il suo clima mite e i paesaggi mediterranei." },
+  { name: "Lago Maggiore (Verbano)", area: 212, depth: 372, regions: "Piemonte, Lombardia (e Svizzera)", desc: "Secondo lago italiano per superficie, le sue sponde ospitano splendide isole barocche (Isole Borromee) e giardini botanici." },
+  { name: "Lago di Como (Lario)", area: 146, depth: 410, regions: "Lombardia", desc: "Famoso per la sua caratteristica forma a 'Y' rovesciata. È il lago più profondo d'Italia (410m) e uno dei più profondi d'Europa." },
+  { name: "Lago Trasimeno", area: 128, depth: 6, regions: "Umbria", desc: "Il lago più grande dell'Italia peninsulare. Molto esteso ma estremamente poco profondo (massimo 6 metri), situato tra colline toscane e umbre." },
+  { name: "Lago di Bolsena", area: 113.5, depth: 151, regions: "Lazio", desc: "Il lago vulcanico più grande d'Europa. Si è formato nella caldera spenta dei monti Volsini ed è famoso per la limpidezza delle sue acque." }
+];
 
 // Web Audio API Synthesizer for lightweight retro sounds
 const playSynthSound = (type) => {
@@ -540,6 +556,14 @@ export default function App() {
             >
               QUIZ TRAINING
             </button>
+            <button 
+              onClick={() => { if (!quizStarted) { setMode('water'); setSelectedRegionId(null); } }}
+              disabled={quizStarted}
+              className={`px-4 py-1.5 rounded text-xs font-semibold font-mono tracking-wider transition-all cursor-pointer
+                ${mode === 'water' ? 'bg-amber-700 text-white shadow-sm' : 'text-stone-500 hover:text-stone-800 disabled:opacity-50'}`}
+            >
+              ACQUE D'ITALIA
+            </button>
           </div>
         </div>
       </header>
@@ -671,6 +695,13 @@ export default function App() {
               >
                 SFIDA QUIZ
               </button>
+              <button 
+                onClick={() => setMode('water')}
+                className={`flex-1 text-center py-2.5 rounded-lg text-xs font-bold tracking-wider transition-all cursor-pointer
+                  ${mode === 'water' ? 'bg-amber-700 text-white font-extrabold shadow-sm' : 'text-stone-500'}`}
+              >
+                ACQUE
+              </button>
             </div>
           )}
 
@@ -741,6 +772,80 @@ export default function App() {
                   Rilascia Selezione
                 </button>
               )}
+            </div>
+          )}
+
+          {/* WATER MODE PANEL (Rivers & Lakes) */}
+          {mode === 'water' && (
+            <div className="glass-panel rounded-2xl p-6 flex flex-col justify-between flex-1 space-y-5">
+              <div>
+                <span className="text-[10px] font-mono text-amber-800 font-extrabold tracking-wider uppercase flex items-center gap-1">
+                  <Waves size={12} /> Idrografia Italiana
+                </span>
+                <h2 className="text-2xl font-black tracking-tight text-stone-900 mt-1">Acque d'Italia</h2>
+                <p className="text-xs text-stone-500 mt-1 font-sans">
+                  Le cime montuose alimentano i fiumi e formano i grandi bacini lacustri del nostro Paese.
+                </p>
+              </div>
+
+              {/* Scrollable container for lists */}
+              <div className="flex-1 overflow-y-auto space-y-5 max-h-[52vh] pr-1 scrollbar-thin">
+                {/* Rivers List */}
+                <div className="space-y-2.5">
+                  <h3 className="text-[10px] font-mono text-stone-500 uppercase tracking-widest font-black flex items-center gap-1.5">
+                    🌊 I 5 Fiumi più Lunghi
+                  </h3>
+                  <div className="space-y-2">
+                    {RIVERS_DATA.map((river, idx) => (
+                      <div key={river.name} className="bg-amber-50/40 border border-amber-900/5 rounded-xl p-3 space-y-1 hover:border-amber-700/20 transition-all">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-stone-900">
+                            {idx + 1}. {river.name}
+                          </span>
+                          <span className="text-[10px] font-mono font-bold text-amber-800 bg-amber-100/60 px-2 py-0.5 rounded-full">
+                            {river.length} km
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-1 text-[9px] font-mono text-stone-500">
+                          <div>Sorgente: <strong className="text-stone-700">{river.source}</strong></div>
+                          <div>Foce: <strong className="text-stone-700">{river.mouth}</strong></div>
+                        </div>
+                        <p className="text-[10px] text-stone-500 leading-relaxed font-sans pt-1 border-t border-dashed border-stone-200/50 mt-1">
+                          {river.desc}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Lakes List */}
+                <div className="space-y-2.5 pt-1">
+                  <h3 className="text-[10px] font-mono text-stone-500 uppercase tracking-widest font-black flex items-center gap-1.5">
+                    💧 I 5 Laghi Naturali più Grandi
+                  </h3>
+                  <div className="space-y-2">
+                    {LAKES_DATA.map((lake, idx) => (
+                      <div key={lake.name} className="bg-stone-50 border border-stone-200/60 rounded-xl p-3 space-y-1 hover:border-amber-700/20 transition-all">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-stone-900">
+                            {idx + 1}. {lake.name}
+                          </span>
+                          <span className="text-[10px] font-mono font-bold text-amber-800 bg-amber-100/60 px-2 py-0.5 rounded-full">
+                            {lake.area} km²
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-1 text-[9px] font-mono text-stone-500">
+                          <div>Regioni: <strong className="text-stone-700 truncate block max-w-[125px]">{lake.regions}</strong></div>
+                          <div>Profondità: <strong className="text-stone-700">{lake.depth} m (max)</strong></div>
+                        </div>
+                        <p className="text-[10px] text-stone-500 leading-relaxed font-sans pt-1 border-t border-dashed border-stone-200/50 mt-1">
+                          {lake.desc}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
