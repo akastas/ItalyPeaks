@@ -275,10 +275,96 @@ export default function App() {
     setIsDragging(false);
   };
 
+  // Confetti Canvas animation for perfect 20/20 win
+  useEffect(() => {
+    if (quizFinished && score === 20) {
+      const canvas = document.getElementById('confetti-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let animationFrameId;
+
+      const resizeCanvas = () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      };
+      
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      let particles = [];
+      const colors = ['#d97706', '#f59e0b', '#fbbf24', '#fcd34d', '#10b981', '#059669', '#3b82f6'];
+
+      for (let i = 0; i < 150; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          r: Math.random() * 4 + 2.5,
+          d: Math.random() * canvas.height,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          tilt: Math.random() * 10 - 5,
+          tiltAngleIncremental: Math.random() * 0.05 + 0.02,
+          tiltAngle: 0
+        });
+      }
+
+      const draw = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p, index) => {
+          p.tiltAngle += p.tiltAngleIncremental;
+          p.y += (Math.cos(p.tiltAngle) + 3 + p.r / 2) / 1.8;
+          p.x += Math.sin(p.tiltAngle);
+          p.tilt = Math.sin(p.tiltAngle - index / 3) * 12;
+
+          ctx.beginPath();
+          ctx.lineWidth = p.r;
+          ctx.strokeStyle = p.color;
+          ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
+          ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+          ctx.stroke();
+
+          // Reset particle if it falls off screen
+          if (p.y > canvas.height) {
+            particles[index] = {
+              x: Math.random() * canvas.width,
+              y: -10,
+              r: p.r,
+              d: p.d,
+              color: p.color,
+              tilt: p.tilt,
+              tiltAngleIncremental: p.tiltAngleIncremental,
+              tiltAngle: 0
+            };
+          }
+        });
+
+        animationFrameId = requestAnimationFrame(draw);
+      };
+
+      draw();
+
+      return () => {
+        cancelAnimationFrame(animationFrameId);
+        window.removeEventListener('resize', resizeCanvas);
+      };
+    }
+  }, [quizFinished, score]);
+
   // Badge list based on score
   const getBadge = (finalScore) => {
-    if (finalScore === 20) return { title: "Alpinista Leggendario", emoji: "👑", desc: "Hai conquistato tutte le vette d'Italia senza errori!" };
-    if (finalScore >= 16) return { title: "Scalatore Esperto", emoji: "🧗", desc: "Hai una conoscenza eccellente delle vette italiane." };
+    if (finalScore === 20) {
+      return { 
+        title: "Alpinista Leggendario", 
+        emoji: "👑", 
+        desc: "Ecco qui, sei pronta Юля! 👑 Hai conquistato tutte le vette d'Italia senza errori. Ora sei prontissima per l'esame!" 
+      };
+    }
+    if (finalScore >= 15) {
+      return { 
+        title: "Scalatore Esperto", 
+        emoji: "🧗", 
+        desc: "Ci sei quasi Юля! 🧗 Ti manca pochissimo al punteggio perfetto. Sei super preparata, continua così!" 
+      };
+    }
     if (finalScore >= 11) return { title: "Escursionista Esperto", emoji: "🥾", desc: "Un'ottima base, pronto per esplorare sentieri d'alta quota." };
     if (finalScore >= 5) return { title: "Esploratore dei Boschi", emoji: "🌲", desc: "Conosci le vette principali, ma la strada per la cima è lunga." };
     return { title: "Camminatore di Vallata", emoji: "🚶", desc: "Ideale per passeggiate in collina, continua a studiare!" };
@@ -417,7 +503,10 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-between selection:bg-amber-200 selection:text-amber-900 pb-4 text-stone-850">
+    <div className="min-h-screen flex flex-col justify-between selection:bg-amber-200 selection:text-amber-900 pb-4 text-stone-850 relative">
+      {quizFinished && score === 20 && (
+        <canvas id="confetti-canvas" className="pointer-events-none fixed inset-0 z-50 w-full h-full" />
+      )}
       
       {/* Top Header */}
       <header className="glass-panel border-b border-stone-200 py-4 px-6 relative z-10">
@@ -657,7 +746,11 @@ export default function App() {
 
           {/* QUIZ MODE PANEL */}
           {mode === 'quiz' && (
-            <div className="glass-panel rounded-2xl p-6 flex flex-col justify-between flex-1">
+            <div className={`glass-panel rounded-2xl p-6 flex flex-col justify-between flex-1 transition-all duration-500 ${
+              quizFinished && score === 20 
+                ? 'border-amber-400 ring-2 ring-amber-400/40 bg-amber-50/10 shadow-[0_0_40px_rgba(245,158,11,0.12)]' 
+                : ''
+            }`}>
               
               {/* Ready to start quiz screen */}
               {!quizStarted && (
@@ -766,35 +859,54 @@ export default function App() {
               {quizFinished && (
                 <div className="flex-1 flex flex-col justify-between py-2">
                   <div className="space-y-6 text-center">
-                    <div className="p-4 bg-amber-50 border border-amber-200 rounded-full inline-block text-amber-700 animate-bounce shadow-sm">
-                      <Award size={48} />
+                    <div className={`p-4 rounded-full inline-block animate-bounce shadow-sm relative ${
+                      score === 20 
+                        ? 'bg-amber-100 border-2 border-amber-500 text-amber-600 shadow-amber-400/20 scale-110' 
+                        : 'bg-amber-50 border border-amber-250 text-amber-700'
+                    }`}>
+                      {score === 20 ? (
+                        <>
+                          <Award size={52} />
+                          <Sparkles size={16} className="absolute -top-1.5 -right-1.5 text-amber-500 animate-pulse" />
+                        </>
+                      ) : (
+                        <Award size={48} />
+                      )}
                     </div>
                     <div>
-                      <h3 className="text-2xl font-extrabold text-stone-900">Quiz Completato!</h3>
-                      <p className="text-xs font-mono text-amber-800/80 mt-1 uppercase tracking-wider">Analisi dei Risultati</p>
+                      <h3 className={`text-2xl font-extrabold ${score === 20 ? 'text-amber-850' : 'text-stone-900'}`}>
+                        {score === 20 ? '🏆 Vittoria Perfetta!' : 'Quiz Completato!'}
+                      </h3>
+                      <p className="text-xs font-mono text-amber-800/80 mt-1 uppercase tracking-wider">
+                        {score === 20 ? 'Prontissima per l\'esame Юля!' : 'Analisi dei Risultati'}
+                      </p>
                     </div>
 
                     {/* Result table */}
-                    <div className="grid grid-cols-2 gap-3 bg-stone-50 border border-stone-200 rounded-xl p-4">
+                    <div className={`grid grid-cols-2 gap-3 border rounded-xl p-4 ${
+                      score === 20 ? 'bg-amber-50/40 border-amber-200/65 shadow-inner' : 'bg-stone-50 border-stone-200'
+                    }`}>
                       <div>
                         <div className="text-[9px] font-mono text-stone-500">PUNTEGGIO</div>
-                        <div className="text-xl font-bold text-stone-900">{score} / {questions.length}</div>
+                        <div className={`text-xl font-bold ${score === 20 ? 'text-amber-950 font-black' : 'text-stone-900'}`}>{score} / {questions.length}</div>
                       </div>
                       <div>
                         <div className="text-[9px] font-mono text-stone-500">PRECISIONE</div>
-                        <div className={`text-xl font-bold ${score >= 16 ? 'text-emerald-700' : score >= 10 ? 'text-amber-700' : 'text-rose-700'}`}>
+                        <div className={`text-xl font-bold ${score === 20 ? 'text-amber-850 font-black' : score >= 15 ? 'text-emerald-700' : score >= 10 ? 'text-amber-700' : 'text-rose-700'}`}>
                           {Math.round((score / questions.length) * 100)}%
                         </div>
                       </div>
                     </div>
 
                     {/* Unlock card */}
-                    <div className="bg-amber-50/50 border border-amber-200 rounded-xl p-4 space-y-1 text-center font-sans">
+                    <div className={`border rounded-xl p-4 space-y-1 text-center font-sans ${
+                      score === 20 ? 'bg-amber-100/30 border-amber-300/40 shadow-sm' : 'bg-amber-50/50 border-amber-200'
+                    }`}>
                       <div className="text-[10px] font-mono text-amber-800 uppercase tracking-widest font-black">Grado Raggiunto</div>
-                      <div className="text-lg font-bold text-stone-900 mt-1">
+                      <div className={`text-lg font-bold mt-1 ${score === 20 ? 'text-amber-950' : 'text-stone-900'}`}>
                         {getBadge(score).emoji} {getBadge(score).title}
                       </div>
-                      <p className="text-xs text-stone-500 pt-1 leading-relaxed">
+                      <p className="text-xs text-stone-600 pt-1 leading-relaxed">
                         {getBadge(score).desc}
                       </p>
                     </div>
@@ -802,7 +914,11 @@ export default function App() {
 
                   <button
                     onClick={resetQuiz}
-                    className="w-full mt-8 bg-amber-700 text-white py-3 rounded-xl font-bold text-sm hover:bg-amber-800 transition-all shadow-[0_4px_15px_rgba(180,83,9,0.15)] cursor-pointer"
+                    className={`w-full mt-8 py-3 rounded-xl font-bold text-sm transition-all cursor-pointer ${
+                      score === 20 
+                        ? 'bg-amber-600 hover:bg-amber-700 text-white shadow-[0_4px_20px_rgba(217,119,6,0.25)]' 
+                        : 'bg-amber-700 text-white hover:bg-amber-800 shadow-[0_4px_15px_rgba(180,83,9,0.15)]'
+                    }`}
                   >
                     Torna alla Mappa
                   </button>
