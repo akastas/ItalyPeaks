@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mountain, Trophy, Sparkles, Map, BookOpen, HelpCircle, Compass, Check, X, RotateCcw, Award, ChevronRight, Waves } from 'lucide-react';
+import { Mountain, Trophy, Sparkles, Map, BookOpen, HelpCircle, Compass, Check, X, RotateCcw, Award, ChevronRight, Waves, ChevronUp, ChevronDown } from 'lucide-react';
 import { ITALY_REGIONS_PATHS } from './italyPaths';
 
 // Detailed data for each region's highest peak
@@ -218,6 +218,14 @@ export default function App() {
   const [mode, setMode] = useState('study'); // 'study' or 'quiz'
   const [selectedRegionId, setSelectedRegionId] = useState(null);
 
+  // Collapsible panel state
+  const [isMinimized, setIsMinimized] = useState(false);
+
+  // Auto-maximize on mode changes
+  useEffect(() => {
+    setIsMinimized(false);
+  }, [mode]);
+
   // Quiz State
   const [quizStarted, setQuizStarted] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -396,10 +404,12 @@ export default function App() {
     setAnsweredState(null);
     setSelectedAnswerId(null);
     setQuizStarted(true);
+    setIsMinimized(false);
     playSynthSound('correct');
   };
 
   const handleRegionClick = (id) => {
+    setIsMinimized(false);
     if (mode === 'study') {
       setSelectedRegionId(id);
     } else if (mode === 'quiz' && quizStarted && !quizFinished && answeredState === null) {
@@ -422,6 +432,7 @@ export default function App() {
   };
 
   const nextQuestion = () => {
+    setIsMinimized(false);
     setAnsweredState(null);
     setSelectedAnswerId(null);
     if (currentQuestionIndex + 1 < questions.length) {
@@ -437,6 +448,7 @@ export default function App() {
     setQuizFinished(false);
     setMode('study');
     setSelectedRegionId(null);
+    setIsMinimized(false);
   };
 
   const currentQuizRegionKey = quizStarted ? questions[currentQuestionIndex] : null;
@@ -519,26 +531,27 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-between selection:bg-amber-200 selection:text-amber-900 pb-4 text-stone-850 relative">
+    <div className="h-[100dvh] flex flex-col justify-between selection:bg-amber-200 selection:text-amber-900 text-stone-850 relative overflow-hidden bg-[#fcfbf8]">
       {quizFinished && score === 20 && (
         <canvas id="confetti-canvas" className="pointer-events-none fixed inset-0 z-50 w-full h-full" />
       )}
       
       {/* Top Header */}
-      <header className="glass-panel border-b border-stone-200 py-4 px-6 relative z-10">
+      <header className="glass-panel border-b border-stone-200 py-3 md:py-4 px-4 md:px-6 relative z-10">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 animate-float shadow-sm">
-              <Mountain size={28} />
+          <div className="flex items-center gap-2.5 md:gap-3">
+            <div className="p-1.5 md:p-2 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 animate-float shadow-sm">
+              <Mountain size={24} className="md:w-[28px] md:h-[28px]" />
             </div>
             <div>
-              <h1 className="text-xl md:text-2xl font-black tracking-tight text-stone-900 flex items-center gap-2">
-                Vette d'Italia <span className="text-amber-800 font-semibold text-xs bg-amber-100/80 border border-amber-200 px-2 py-0.5 rounded-full">Summit Challenge</span>
+              <h1 className="text-lg md:text-2xl font-black tracking-tight text-stone-900 flex items-center gap-1.5 md:gap-2">
+                Vette d'Italia <span className="text-amber-800 font-semibold text-[10px] md:text-xs bg-amber-100/80 border border-amber-200 px-2 py-0.5 rounded-full">Summit Challenge</span>
               </h1>
-              <p className="text-[10px] md:text-xs font-mono text-amber-800/80 tracking-widest uppercase">Esploratore delle Cime Regionali</p>
+              <p className="text-[9px] md:text-xs font-mono text-amber-800/80 tracking-widest uppercase">Esploratore delle Cime Regionali</p>
             </div>
           </div>
           
+          {/* Desktop Mode Switcher */}
           <div className="hidden md:flex gap-1 bg-stone-100 border border-stone-200 p-1 rounded-lg">
             <button 
               onClick={() => { if (!quizStarted) { setMode('study'); setSelectedRegionId(null); } }}
@@ -568,14 +581,41 @@ export default function App() {
         </div>
       </header>
 
+      {/* Mobile Mode Switcher (Directly below header on mobile) */}
+      {!quizStarted && (
+        <div className="flex md:hidden bg-stone-100/90 backdrop-blur border-b border-stone-200 p-1 gap-1 z-10 relative">
+          <button 
+            onClick={() => setMode('study')}
+            className={`flex-1 text-center py-2 rounded-lg text-xs font-bold tracking-wider transition-all cursor-pointer
+              ${mode === 'study' ? 'bg-amber-700 text-white font-extrabold shadow-sm' : 'text-stone-500'}`}
+          >
+            STUDIA MAPPA
+          </button>
+          <button 
+            onClick={() => setMode('quiz')}
+            className={`flex-1 text-center py-2 rounded-lg text-xs font-bold tracking-wider transition-all cursor-pointer
+              ${mode === 'quiz' ? 'bg-amber-700 text-white font-extrabold shadow-sm' : 'text-stone-500'}`}
+          >
+            SFIDA QUIZ
+          </button>
+          <button 
+            onClick={() => setMode('water')}
+            className={`flex-1 text-center py-2 rounded-lg text-xs font-bold tracking-wider transition-all cursor-pointer
+              ${mode === 'water' ? 'bg-amber-700 text-white font-extrabold shadow-sm' : 'text-stone-500'}`}
+          >
+            ACQUE
+          </button>
+        </div>
+      )}
+
       {/* Main Body */}
-      <main className="max-w-6xl mx-auto w-full px-4 md:px-6 py-6 flex-1 flex flex-col md:flex-row gap-6 items-stretch min-h-0">
+      <main className="max-w-6xl mx-auto w-full px-4 md:px-6 py-4 md:py-6 flex-1 flex flex-col md:flex-row gap-4 md:gap-6 items-stretch min-h-0 relative overflow-hidden">
         
         {/* Map Side */}
-        <section className="flex-1 glass-panel p-6 rounded-2xl flex flex-col items-center justify-center relative min-h-[380px] md:min-h-0 overflow-hidden">
+        <section className="absolute inset-0 md:relative md:flex-1 md:glass-panel p-4 md:p-6 md:rounded-2xl flex flex-col items-center justify-center overflow-hidden z-0">
           
           {/* Zoom Controls */}
-          <div className="absolute top-4 right-4 flex flex-col gap-1.5 z-10">
+          <div className="absolute top-4 right-4 flex flex-col gap-1.5 z-10 pointer-events-auto">
             <button 
               onClick={zoomIn}
               title="Aumenta Zoom"
@@ -599,7 +639,42 @@ export default function App() {
             </button>
           </div>
 
-          <div className="w-full max-w-[380px] aspect-[560/663] relative overflow-hidden">
+          {/* Mobile Top-Left Controls */}
+          <div className="absolute top-4 left-4 flex flex-col gap-2 z-10 md:hidden pointer-events-auto">
+            {/* Elevation Toggle */}
+            <div className="flex items-center gap-2 bg-white/90 backdrop-blur border border-stone-200 px-2.5 py-1.5 rounded-lg shadow-sm">
+              <span className="text-[9px] font-mono text-stone-500 uppercase tracking-wider font-extrabold">Colori</span>
+              <button 
+                onClick={() => setShowElevation(!showElevation)}
+                title="Mostra/Nascondi Altezze Vette"
+                className={`w-7 h-4 rounded-full p-0.5 transition-colors duration-200 focus:outline-none cursor-pointer relative flex items-center
+                  ${showElevation ? 'bg-amber-700' : 'bg-stone-300'}`}
+              >
+                <div className={`bg-white w-3 h-3 rounded-full shadow-sm transform transition-transform duration-200
+                  ${showElevation ? 'translate-x-3' : 'translate-x-0'}`}
+                />
+              </button>
+            </div>
+
+            {/* Elevation Legend */}
+            {showElevation && (
+              <div className="bg-white/90 backdrop-blur border border-stone-200 p-2 rounded-lg shadow-sm flex flex-col gap-1 w-fit">
+                <div className="text-[8px] font-mono text-stone-500 uppercase tracking-wider font-bold">Quota Vette</div>
+                <div className="flex items-center gap-1">
+                  <span className="text-[8px] font-mono text-stone-400">1.1k</span>
+                  <div 
+                    className="h-1.5 w-14 rounded-full border border-stone-200/50"
+                    style={{
+                      background: 'linear-gradient(to right, hsl(38, 28%, 93%), hsl(30, 41%, 75%), hsl(22, 54%, 56%))'
+                    }}
+                  />
+                  <span className="text-[8px] font-mono text-stone-400">4.8k</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="w-full max-w-[380px] aspect-[560/663] relative overflow-hidden flex items-center justify-center">
             <svg 
               viewBox="0 0 560.512 663.114" 
               className={`w-full h-full drop-shadow-[0_10px_25px_rgba(45,39,34,0.12)] select-none outline-none
@@ -635,8 +710,8 @@ export default function App() {
             </svg>
           </div>
           
-          {/* Legend and Region badge row */}
-          <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-6 pt-4 border-t border-stone-200/60 relative z-10">
+          {/* Legend and Region badge row (Desktop only) */}
+          <div className="hidden md:flex w-full flex-col sm:flex-row sm:items-center justify-between gap-4 mt-6 pt-4 border-t border-stone-200/60 relative z-10">
             <div className="flex flex-wrap items-center gap-2">
               <div className="bg-white/80 backdrop-blur border border-stone-200 px-3 py-1.5 rounded-lg text-[10px] font-mono text-stone-600 flex items-center gap-1.5 shadow-sm">
                 <Map size={11} /> 20 REGIONI D'ITALIA
@@ -675,361 +750,428 @@ export default function App() {
           </div>
         </section>
 
-        {/* Panel Side */}
-        <section className="w-full md:w-[380px] flex flex-col">
+        {/* Panel Side (Floats on mobile, side-by-side on desktop) */}
+        <section className="absolute bottom-4 left-4 right-4 md:relative md:bottom-auto md:left-auto md:right-auto md:w-[380px] z-20 pointer-events-none flex flex-col md:pointer-events-auto max-h-[50vh] md:max-h-none justify-end">
           
-          {/* Mobile view switcher for mode (shows only on mobile when not in active quiz) */}
-          {!quizStarted && (
-            <div className="flex md:hidden bg-stone-100 border border-stone-200 p-1 rounded-xl mb-4 gap-1">
-              <button 
-                onClick={() => setMode('study')}
-                className={`flex-1 text-center py-2.5 rounded-lg text-xs font-bold tracking-wider transition-all cursor-pointer
-                  ${mode === 'study' ? 'bg-amber-700 text-white font-extrabold shadow-sm' : 'text-stone-500'}`}
-              >
-                STUDIA MAPPA
-              </button>
-              <button 
-                onClick={() => setMode('quiz')}
-                className={`flex-1 text-center py-2.5 rounded-lg text-xs font-bold tracking-wider transition-all cursor-pointer
-                  ${mode === 'quiz' ? 'bg-amber-700 text-white font-extrabold shadow-sm' : 'text-stone-500'}`}
-              >
-                SFIDA QUIZ
-              </button>
-              <button 
-                onClick={() => setMode('water')}
-                className={`flex-1 text-center py-2.5 rounded-lg text-xs font-bold tracking-wider transition-all cursor-pointer
-                  ${mode === 'water' ? 'bg-amber-700 text-white font-extrabold shadow-sm' : 'text-stone-500'}`}
-              >
-                ACQUE
-              </button>
-            </div>
-          )}
-
           {/* STUDY MODE PANEL */}
           {mode === 'study' && (
-            <div className="glass-panel rounded-2xl p-6 flex flex-col justify-between flex-1">
-              <AnimatePresence mode="wait">
-                {selectedRegion ? (
-                  <motion.div
-                    key={selectedRegionId}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -15 }}
-                    className="space-y-6 flex-1"
-                  >
-                    <div>
-                      <span className="text-[10px] font-mono text-amber-800 font-extrabold tracking-wider uppercase">Regione</span>
-                      <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 mt-0.5">{selectedRegion.name}</h2>
-                    </div>
-
-                    <div className="space-y-4">
-                      {/* Peak card */}
-                      <div className="bg-amber-50/50 border border-amber-900/5 rounded-xl p-4 space-y-1">
-                        <span className="text-[9px] font-mono text-amber-800 uppercase tracking-widest flex items-center gap-1.5">
-                          <Mountain size={11} /> Cima Più Alta
-                        </span>
-                        <div className="text-xl font-extrabold text-amber-950">{selectedRegion.peak}</div>
-                      </div>
-
-                      {/* Stats grid */}
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="bg-stone-50 border border-stone-200/60 rounded-xl p-3.5 space-y-0.5">
-                          <span className="text-[9px] font-mono text-stone-500 uppercase tracking-wider">Massiccio</span>
-                          <div className="text-xs font-bold text-stone-800 truncate">{selectedRegion.massif}</div>
-                        </div>
-                        <div className="bg-stone-50 border border-stone-200/60 rounded-xl p-3.5 space-y-0.5">
-                          <span className="text-[9px] font-mono text-stone-500 uppercase tracking-wider">Altezza</span>
-                          <div className="text-base font-extrabold font-mono text-amber-800">{selectedRegion.height.toLocaleString()} m</div>
-                        </div>
-                      </div>
-
-                      {/* Description */}
-                      <div className="bg-stone-50/40 border border-stone-200/40 rounded-xl p-4 text-xs font-sans text-stone-600 leading-relaxed">
-                        {selectedRegion.notes}
-                      </div>
-                    </div>
-                  </motion.div>
-                ) : (
-                  <div className="flex-1 flex flex-col items-center justify-center text-center space-y-4 py-16">
-                    <div className="p-4 bg-amber-50 rounded-full border border-amber-200/50 text-amber-700/60 animate-pulse shadow-sm">
-                      <Compass size={40} />
-                    </div>
-                    <div>
-                      <h3 className="text-base font-bold text-stone-850">Esplora la Mappa</h3>
-                      <p className="text-xs text-stone-500 mt-2 max-w-[220px] mx-auto leading-relaxed">
-                        Tocca una regione sulla mappa d'Italia per scoprire la sua vetta più alta, la quota e le note geografiche.
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </AnimatePresence>
-
-              {selectedRegion && (
-                <button
-                  onClick={() => setSelectedRegionId(null)}
-                  className="w-full mt-6 py-2 bg-stone-100 border border-stone-200 rounded-xl text-xs font-mono text-stone-500 hover:text-stone-850 hover:border-stone-300 transition-all cursor-pointer"
+            <div className="glass-panel rounded-2xl p-4 md:p-6 flex flex-col justify-between pointer-events-auto transition-all duration-300 shadow-lg md:shadow-sm">
+              {isMinimized ? (
+                <div 
+                  onClick={() => setIsMinimized(false)}
+                  className="flex items-center justify-between cursor-pointer w-full"
                 >
-                  Rilascia Selezione
-                </button>
+                  <div className="flex items-center gap-2">
+                    <BookOpen size={16} className="text-amber-700" />
+                    <span className="text-xs font-bold text-stone-900">
+                      {selectedRegion ? `Studia: ${selectedRegion.name}` : "Studia: Tocca una regione"}
+                    </span>
+                  </div>
+                  <ChevronUp size={16} className="text-stone-500" />
+                </div>
+              ) : (
+                <>
+                  {/* Header row with minimize button */}
+                  <div className="flex items-center justify-between border-b border-stone-100 pb-2 mb-3 md:hidden">
+                    <div className="flex items-center gap-1.5">
+                      <BookOpen size={14} className="text-amber-700" />
+                      <span className="text-[10px] font-mono font-bold text-stone-500 uppercase">STUDIO</span>
+                    </div>
+                    <button 
+                      onClick={() => setIsMinimized(true)}
+                      className="p-1 hover:bg-stone-100 rounded-full transition-colors cursor-pointer text-stone-500"
+                      title="Riduci pannello"
+                    >
+                      <ChevronDown size={18} />
+                    </button>
+                  </div>
+
+                  <AnimatePresence mode="wait">
+                    {selectedRegion ? (
+                      <motion.div
+                        key={selectedRegionId}
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -15 }}
+                        className="space-y-4 flex-1 overflow-y-auto"
+                      >
+                        <div>
+                          <span className="text-[10px] font-mono text-amber-800 font-extrabold tracking-wider uppercase">Regione</span>
+                          <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-stone-900 mt-0.5">{selectedRegion.name}</h2>
+                        </div>
+
+                        <div className="space-y-3">
+                          {/* Peak card */}
+                          <div className="bg-amber-50/50 border border-amber-900/5 rounded-xl p-3 space-y-0.5">
+                            <span className="text-[9px] font-mono text-amber-800 uppercase tracking-widest flex items-center gap-1.5">
+                              <Mountain size={11} /> Cima Più Alta
+                            </span>
+                            <div className="text-lg font-extrabold text-amber-950">{selectedRegion.peak}</div>
+                          </div>
+
+                          {/* Stats grid */}
+                          <div className="grid grid-cols-2 gap-2">
+                            <div className="bg-stone-50 border border-stone-200/60 rounded-xl p-3 space-y-0.5">
+                              <span className="text-[9px] font-mono text-stone-500 uppercase tracking-wider">Massiccio</span>
+                              <div className="text-xs font-bold text-stone-855 truncate">{selectedRegion.massif}</div>
+                            </div>
+                            <div className="bg-stone-50 border border-stone-200/60 rounded-xl p-3 space-y-0.5">
+                              <span className="text-[9px] font-mono text-stone-500 uppercase tracking-wider">Altezza</span>
+                              <div className="text-sm md:text-base font-extrabold font-mono text-amber-800">{selectedRegion.height.toLocaleString()} m</div>
+                            </div>
+                          </div>
+
+                          {/* Description */}
+                          <div className="bg-stone-50/40 border border-stone-200/40 rounded-xl p-3 text-xs font-sans text-stone-600 leading-relaxed max-h-[12vh] md:max-h-none overflow-y-auto">
+                            {selectedRegion.notes}
+                          </div>
+                        </div>
+                      </motion.div>
+                    ) : (
+                      <div className="flex-1 flex flex-col items-center justify-center text-center space-y-4 py-8 md:py-16">
+                        <div className="p-3 bg-amber-50 rounded-full border border-amber-200/50 text-amber-700/60 animate-pulse shadow-sm">
+                          <Compass size={32} />
+                        </div>
+                        <div>
+                          <h3 className="text-sm md:text-base font-bold text-stone-850">Esplora la Mappa</h3>
+                          <p className="text-[11px] md:text-xs text-stone-500 mt-1 max-w-[220px] mx-auto leading-relaxed">
+                            Tocca una regione sulla mappa d'Italia per scoprire la sua vetta più alta, la quota e le note geografiche.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </AnimatePresence>
+
+                  {selectedRegion && (
+                    <button
+                      onClick={() => setSelectedRegionId(null)}
+                      className="w-full mt-4 py-2 bg-stone-100 border border-stone-200 rounded-xl text-xs font-mono text-stone-500 hover:text-stone-850 hover:border-stone-300 transition-all cursor-pointer"
+                    >
+                      Rilascia Selezione
+                    </button>
+                  )}
+                </>
               )}
             </div>
           )}
 
           {/* WATER MODE PANEL (Rivers & Lakes) */}
           {mode === 'water' && (
-            <div className="glass-panel rounded-2xl p-6 flex flex-col justify-between flex-1 space-y-5">
-              <div>
-                <span className="text-[10px] font-mono text-amber-800 font-extrabold tracking-wider uppercase flex items-center gap-1">
-                  <Waves size={12} /> Idrografia Italiana
-                </span>
-                <h2 className="text-2xl font-black tracking-tight text-stone-900 mt-1">Acque d'Italia</h2>
-                <p className="text-xs text-stone-500 mt-1 font-sans">
-                  Le cime montuose alimentano i fiumi e formano i grandi bacini lacustri del nostro Paese.
-                </p>
-              </div>
-
-              {/* Scrollable container for lists */}
-              <div className="flex-1 overflow-y-auto space-y-5 max-h-[52vh] pr-1 scrollbar-thin">
-                {/* Rivers List */}
-                <div className="space-y-2.5">
-                  <h3 className="text-[10px] font-mono text-stone-500 uppercase tracking-widest font-black flex items-center gap-1.5">
-                    🌊 I 5 Fiumi più Lunghi
-                  </h3>
-                  <div className="space-y-2">
-                    {RIVERS_DATA.map((river, idx) => (
-                      <div key={river.name} className="bg-amber-50/40 border border-amber-900/5 rounded-xl p-3 space-y-1 hover:border-amber-700/20 transition-all">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold text-stone-900">
-                            {idx + 1}. {river.name}
-                          </span>
-                          <span className="text-[10px] font-mono font-bold text-amber-800 bg-amber-100/60 px-2 py-0.5 rounded-full">
-                            {river.length} km
-                          </span>
-                        </div>
-                        <div className="grid grid-cols-2 gap-1 text-[9px] font-mono text-stone-500">
-                          <div>Sorgente: <strong className="text-stone-700">{river.source}</strong></div>
-                          <div>Foce: <strong className="text-stone-700">{river.mouth}</strong></div>
-                        </div>
-                        <p className="text-[10px] text-stone-500 leading-relaxed font-sans pt-1 border-t border-dashed border-stone-200/50 mt-1">
-                          {river.desc}
-                        </p>
-                      </div>
-                    ))}
+            <div className="glass-panel rounded-2xl p-4 md:p-6 flex flex-col pointer-events-auto transition-all duration-300 shadow-lg md:shadow-sm">
+              {isMinimized ? (
+                <div 
+                  onClick={() => setIsMinimized(false)}
+                  className="flex items-center justify-between cursor-pointer w-full"
+                >
+                  <div className="flex items-center gap-2">
+                    <Waves size={16} className="text-amber-700" />
+                    <span className="text-xs font-bold text-stone-900">
+                      Acque d'Italia: 5 Fiumi e 5 Laghi
+                    </span>
                   </div>
+                  <ChevronUp size={16} className="text-stone-500" />
                 </div>
-
-                {/* Lakes List */}
-                <div className="space-y-2.5 pt-1">
-                  <h3 className="text-[10px] font-mono text-stone-500 uppercase tracking-widest font-black flex items-center gap-1.5">
-                    💧 I 5 Laghi Naturali più Grandi
-                  </h3>
-                  <div className="space-y-2">
-                    {LAKES_DATA.map((lake, idx) => (
-                      <div key={lake.name} className="bg-stone-50 border border-stone-200/60 rounded-xl p-3 space-y-1 hover:border-amber-700/20 transition-all">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold text-stone-900">
-                            {idx + 1}. {lake.name}
-                          </span>
-                          <span className="text-[10px] font-mono font-bold text-amber-800 bg-amber-100/60 px-2 py-0.5 rounded-full">
-                            {lake.area} km²
-                          </span>
-                        </div>
-                        <div className="grid grid-cols-2 gap-1 text-[9px] font-mono text-stone-500">
-                          <div>Regioni: <strong className="text-stone-700 truncate block max-w-[125px]">{lake.regions}</strong></div>
-                          <div>Profondità: <strong className="text-stone-700">{lake.depth} m (max)</strong></div>
-                        </div>
-                        <p className="text-[10px] text-stone-500 leading-relaxed font-sans pt-1 border-t border-dashed border-stone-200/50 mt-1">
-                          {lake.desc}
-                        </p>
-                      </div>
-                    ))}
+              ) : (
+                <>
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <span className="text-[10px] font-mono text-amber-800 font-extrabold tracking-wider uppercase flex items-center gap-1">
+                        <Waves size={12} /> Idrografia Italiana
+                      </span>
+                      <h2 className="text-xl md:text-2xl font-black tracking-tight text-stone-900 mt-0.5">Acque d'Italia</h2>
+                    </div>
+                    <button 
+                      onClick={() => setIsMinimized(true)}
+                      className="p-1 hover:bg-stone-100 rounded-full transition-colors cursor-pointer text-stone-500"
+                      title="Riduci pannello"
+                    >
+                      <ChevronDown size={18} />
+                    </button>
                   </div>
-                </div>
-              </div>
+                  
+                  <p className="text-[11px] text-stone-500 mt-1 font-sans hidden md:block">
+                    Le cime montuose alimentano i fiumi e formano i grandi bacini lacustri del nostro Paese.
+                  </p>
+
+                  {/* Scrollable container for lists */}
+                  <div className="flex-1 overflow-y-auto space-y-4 max-h-[30vh] md:max-h-[52vh] pr-1 scrollbar-thin mt-3">
+                    {/* Rivers List */}
+                    <div className="space-y-2">
+                      <h3 className="text-[9px] font-mono text-stone-500 uppercase tracking-widest font-black flex items-center gap-1.5">
+                        🌊 I 5 Fiumi più Lunghi
+                      </h3>
+                      <div className="space-y-2">
+                        {RIVERS_DATA.map((river, idx) => (
+                          <div key={river.name} className="bg-amber-50/40 border border-amber-900/5 rounded-xl p-2.5 space-y-1 hover:border-amber-700/20 transition-all">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-stone-900">
+                                {idx + 1}. {river.name}
+                              </span>
+                              <span className="text-[9px] font-mono font-bold text-amber-800 bg-amber-100/60 px-2 py-0.5 rounded-full">
+                                {river.length} km
+                              </span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-1 text-[8px] font-mono text-stone-500">
+                              <div>Sorgente: <strong className="text-stone-700">{river.source}</strong></div>
+                              <div>Foce: <strong className="text-stone-700">{river.mouth}</strong></div>
+                            </div>
+                            <p className="text-[9px] text-stone-500 leading-relaxed font-sans pt-1 border-t border-dashed border-stone-200/50 mt-1">
+                              {river.desc}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Lakes List */}
+                    <div className="space-y-2 pt-1">
+                      <h3 className="text-[9px] font-mono text-stone-500 uppercase tracking-widest font-black flex items-center gap-1.5">
+                        💧 I 5 Laghi Naturali più Grandi
+                      </h3>
+                      <div className="space-y-2">
+                        {LAKES_DATA.map((lake, idx) => (
+                          <div key={lake.name} className="bg-stone-50 border border-stone-200/60 rounded-xl p-2.5 space-y-1 hover:border-amber-700/20 transition-all">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-stone-900">
+                                {idx + 1}. {lake.name}
+                              </span>
+                              <span className="text-[9px] font-mono font-bold text-amber-800 bg-amber-100/60 px-2 py-0.5 rounded-full">
+                                {lake.area} km²
+                              </span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-1 text-[8px] font-mono text-stone-500">
+                              <div>Regioni: <strong className="text-stone-750 truncate block max-w-[125px]">{lake.regions}</strong></div>
+                              <div>Profondità: <strong className="text-stone-700">{lake.depth} m (max)</strong></div>
+                            </div>
+                            <p className="text-[9px] text-stone-500 leading-relaxed font-sans pt-1 border-t border-dashed border-stone-200/50 mt-1">
+                              {lake.desc}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           )}
 
           {/* QUIZ MODE PANEL */}
           {mode === 'quiz' && (
-            <div className={`glass-panel rounded-2xl p-6 flex flex-col justify-between flex-1 transition-all duration-500 ${
+            <div className={`glass-panel rounded-2xl p-4 md:p-6 flex flex-col pointer-events-auto transition-all duration-500 shadow-lg md:shadow-sm ${
               quizFinished && score === 20 
                 ? 'border-amber-400 ring-2 ring-amber-400/40 bg-amber-50/10 shadow-[0_0_40px_rgba(245,158,11,0.12)]' 
                 : ''
             }`}>
-              
-              {/* Ready to start quiz screen */}
-              {!quizStarted && (
-                <div className="flex-1 flex flex-col items-center justify-center text-center space-y-6 py-8">
-                  <div className="p-4 bg-amber-50 rounded-full border border-amber-200 text-amber-700 shadow-sm">
-                    <Trophy size={48} />
+              {isMinimized ? (
+                <div 
+                  onClick={() => setIsMinimized(false)}
+                  className="flex items-center justify-between cursor-pointer w-full"
+                >
+                  <div className="flex items-center gap-2">
+                    <Trophy size={16} className="text-amber-700" />
+                    <span className="text-xs font-bold text-stone-900">
+                      {!quizStarted 
+                        ? "Quiz: Pronto per la Sfida?" 
+                        : quizFinished 
+                          ? `Quiz completato! Punteggio: ${score}/20`
+                          : `Quiz: Domanda ${currentQuestionIndex + 1}/20 (${currentQuizRegion?.peak})`
+                      }
+                    </span>
                   </div>
-                  <div>
-                    <h3 className="text-xl font-extrabold text-stone-900">Pronto per la Sfida?</h3>
-                    <p className="text-xs text-stone-500 mt-2 max-w-[240px] mx-auto leading-relaxed font-sans">
-                      Ti verranno chieste le posizioni di tutte le 20 vette regionali più alte d'Italia. Cerca di totalizzare il punteggio massimo!
-                    </p>
-                  </div>
-
-                  <button
-                    onClick={startNewQuiz}
-                    className="w-full bg-amber-700 text-white py-3 rounded-xl font-bold text-sm hover:bg-amber-800 transition-all shadow-[0_4px_15px_rgba(180,83,9,0.15)] cursor-pointer"
-                  >
-                    Inizia Quiz
-                  </button>
+                  <ChevronUp size={16} className="text-stone-500" />
                 </div>
-              )}
-
-              {/* Quiz in progress */}
-              {quizStarted && !quizFinished && (
-                <div className="flex-1 flex flex-col justify-between">
-                  <div className="space-y-6">
-                    {/* Status bar */}
-                    <div className="flex justify-between items-center font-mono text-[10px] text-stone-500 border-b border-stone-200 pb-3">
-                      <span>DOMANDA {currentQuestionIndex + 1} / {questions.length}</span>
-                      <span className="text-amber-800 font-bold">PUNTEGGIO: {score}</span>
+              ) : (
+                <>
+                  {/* Minimize button */}
+                  <div className="flex items-center justify-between border-b border-stone-100 pb-2 mb-3 md:hidden">
+                    <div className="flex items-center gap-1.5">
+                      <Trophy size={14} className="text-amber-700" />
+                      <span className="text-[10px] font-mono font-bold text-stone-500 uppercase">SFIDA QUIZ</span>
                     </div>
-
-                    {/* Question Card */}
-                    <div className="space-y-4">
-                      <div className="bg-amber-50 border-l-4 border-amber-700 p-4 rounded-r-xl space-y-2 shadow-sm">
-                        <div className="text-[9px] font-mono text-amber-800 font-extrabold tracking-widest uppercase">Trova la regione di:</div>
-                        <div className="text-xl font-extrabold text-stone-900">
-                          {currentQuizRegion?.peak}
-                        </div>
-                        <div className="flex items-center gap-3 text-[10px] font-mono text-stone-500 pt-1">
-                          <span>Gruppo: <strong className="text-stone-700">{currentQuizRegion?.massif}</strong></span>
-                          <span>Altezza: <strong className="text-amber-800">{currentQuizRegion?.height} m</strong></span>
-                        </div>
-                      </div>
-
-                      {/* Map Prompt */}
-                      {answeredState === null ? (
-                        selectedAnswerId === null ? (
-                          <div className="bg-stone-50 border border-dashed border-stone-300 p-6 rounded-xl text-center">
-                            <p className="text-xs font-sans text-stone-500 animate-pulse">
-                              Tocca sulla mappa la regione corretta!
-                            </p>
-                          </div>
-                        ) : (
-                          <div className="bg-amber-50 border border-amber-200 p-5 rounded-xl text-center space-y-2 shadow-sm">
-                            <p className="text-xs font-sans text-stone-700">
-                              Hai selezionato: <strong className="text-stone-900 font-extrabold">{PEAKS_DATA[selectedAnswerId]?.name}</strong>
-                            </p>
-                            <p className="text-[11px] font-medium text-amber-800 animate-pulse">
-                              Tocca di nuovo la regione selezionata per confermare la risposta.
-                            </p>
-                          </div>
-                        )
-                      ) : (
-                        <motion.div
-                          initial={{ scale: 0.96, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          className={`p-4 rounded-xl border flex items-start gap-3 ${
-                            answeredState === 'correct' 
-                              ? 'border-emerald-200 bg-emerald-50 text-emerald-800' 
-                              : 'border-rose-200 bg-rose-50 text-rose-800'
-                          }`}
-                        >
-                          <div className="mt-0.5">
-                            {answeredState === 'correct' ? <Check size={16} /> : <X size={16} />}
-                          </div>
-                          <div className="text-xs space-y-1 font-sans">
-                            <div className="font-extrabold">
-                              {answeredState === 'correct' ? 'Risposta Esatta!' : 'Risposta Errata!'}
-                            </div>
-                            <p className="text-stone-600 leading-relaxed text-[11px]">
-                              {answeredState === 'correct' 
-                                ? `Ottimo lavoro! Il ${currentQuizRegion?.peak} è proprio in ${currentQuizRegion?.name}.`
-                                : `Hai selezionato ${PEAKS_DATA[selectedAnswerId]?.name || 'un\'altra regione'}. La cima si trova in ${currentQuizRegion?.name}.`
-                              }
-                            </p>
-                          </div>
-                        </motion.div>
-                      )}
-                    </div>
-                  </div>
-
-                  {answeredState !== null && (
-                    <button
-                      onClick={nextQuestion}
-                      className="w-full mt-6 bg-stone-800 text-white py-3 rounded-xl font-bold text-xs hover:bg-amber-700 transition-all cursor-pointer"
+                    <button 
+                      onClick={() => setIsMinimized(true)}
+                      className="p-1 hover:bg-stone-100 rounded-full transition-colors cursor-pointer text-stone-500"
+                      title="Riduci pannello"
                     >
-                      {currentQuestionIndex + 1 < questions.length ? 'Prossima Domanda' : 'Vedi Risultati'}
+                      <ChevronDown size={18} />
                     </button>
-                  )}
-                </div>
-              )}
-
-              {/* End of Quiz Screen */}
-              {quizFinished && (
-                <div className="flex-1 flex flex-col justify-between py-2">
-                  <div className="space-y-6 text-center">
-                    <div className={`p-4 rounded-full inline-block animate-bounce shadow-sm relative ${
-                      score === 20 
-                        ? 'bg-amber-100 border-2 border-amber-500 text-amber-600 shadow-amber-400/20 scale-110' 
-                        : 'bg-amber-50 border border-amber-250 text-amber-700'
-                    }`}>
-                      {score === 20 ? (
-                        <>
-                          <Award size={52} />
-                          <Sparkles size={16} className="absolute -top-1.5 -right-1.5 text-amber-500 animate-pulse" />
-                        </>
-                      ) : (
-                        <Award size={48} />
-                      )}
-                    </div>
-                    <div>
-                      <h3 className={`text-2xl font-extrabold ${score === 20 ? 'text-amber-850' : 'text-stone-900'}`}>
-                        {score === 20 ? '🏆 Vittoria Perfetta!' : 'Quiz Completato!'}
-                      </h3>
-                      <p className="text-xs font-mono text-amber-800/80 mt-1 uppercase tracking-wider">
-                        {score === 20 ? 'Prontissima per l\'esame Юля!' : 'Analisi dei Risultati'}
-                      </p>
-                    </div>
-
-                    {/* Result table */}
-                    <div className={`grid grid-cols-2 gap-3 border rounded-xl p-4 ${
-                      score === 20 ? 'bg-amber-50/40 border-amber-200/65 shadow-inner' : 'bg-stone-50 border-stone-200'
-                    }`}>
-                      <div>
-                        <div className="text-[9px] font-mono text-stone-500">PUNTEGGIO</div>
-                        <div className={`text-xl font-bold ${score === 20 ? 'text-amber-950 font-black' : 'text-stone-900'}`}>{score} / {questions.length}</div>
-                      </div>
-                      <div>
-                        <div className="text-[9px] font-mono text-stone-500">PRECISIONE</div>
-                        <div className={`text-xl font-bold ${score === 20 ? 'text-amber-850 font-black' : score >= 15 ? 'text-emerald-700' : score >= 10 ? 'text-amber-700' : 'text-rose-700'}`}>
-                          {Math.round((score / questions.length) * 100)}%
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Unlock card */}
-                    <div className={`border rounded-xl p-4 space-y-1 text-center font-sans ${
-                      score === 20 ? 'bg-amber-100/30 border-amber-300/40 shadow-sm' : 'bg-amber-50/50 border-amber-200'
-                    }`}>
-                      <div className="text-[10px] font-mono text-amber-800 uppercase tracking-widest font-black">Grado Raggiunto</div>
-                      <div className={`text-lg font-bold mt-1 ${score === 20 ? 'text-amber-950' : 'text-stone-900'}`}>
-                        {getBadge(score).emoji} {getBadge(score).title}
-                      </div>
-                      <p className="text-xs text-stone-600 pt-1 leading-relaxed">
-                        {getBadge(score).desc}
-                      </p>
-                    </div>
                   </div>
 
-                  <button
-                    onClick={resetQuiz}
-                    className={`w-full mt-8 py-3 rounded-xl font-bold text-sm transition-all cursor-pointer ${
-                      score === 20 
-                        ? 'bg-amber-600 hover:bg-amber-700 text-white shadow-[0_4px_20px_rgba(217,119,6,0.25)]' 
-                        : 'bg-amber-700 text-white hover:bg-amber-800 shadow-[0_4px_15px_rgba(180,83,9,0.15)]'
-                    }`}
-                  >
-                    Torna alla Mappa
-                  </button>
-                </div>
-              )}
+                  {/* Ready to start quiz screen */}
+                  {!quizStarted && (
+                    <div className="flex-1 flex flex-col items-center justify-center text-center space-y-4 py-4 md:py-8">
+                      <div className="p-3 bg-amber-50 rounded-full border border-amber-200 text-amber-700 shadow-sm hidden md:block">
+                        <Trophy size={40} />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-extrabold text-stone-900">Pronto per la Sfida?</h3>
+                        <p className="text-[11px] md:text-xs text-stone-500 mt-2 max-w-[240px] mx-auto leading-relaxed font-sans">
+                          Ti verranno chieste le posizioni di tutte le 20 vette regionali più alte d'Italia. Cerca di totalizzare il punteggio massimo!
+                        </p>
+                      </div>
 
+                      <button
+                        onClick={startNewQuiz}
+                        className="w-full bg-amber-700 text-white py-2.5 rounded-xl font-bold text-sm hover:bg-amber-800 transition-all shadow-[0_4px_15px_rgba(180,83,9,0.15)] cursor-pointer"
+                      >
+                        Inizia Quiz
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Quiz in progress */}
+                  {quizStarted && !quizFinished && (
+                    <div className="flex-1 flex flex-col justify-between">
+                      <div className="space-y-4">
+                        {/* Status bar */}
+                        <div className="flex justify-between items-center font-mono text-[9px] text-stone-500 border-b border-stone-200 pb-2">
+                          <span>DOMANDA {currentQuestionIndex + 1} / {questions.length}</span>
+                          <span className="text-amber-800 font-bold">PUNTEGGIO: {score}</span>
+                        </div>
+
+                        {/* Question Card */}
+                        <div className="space-y-3">
+                          <div className="bg-amber-50 border-l-4 border-amber-700 p-3 rounded-r-xl space-y-1 shadow-sm">
+                            <div className="text-[8px] font-mono text-amber-800 font-extrabold tracking-widest uppercase">Trova la regione di:</div>
+                            <div className="text-lg font-extrabold text-stone-900 leading-tight">
+                              {currentQuizRegion?.peak}
+                            </div>
+                            <div className="flex items-center gap-3 text-[9px] font-mono text-stone-500 pt-0.5">
+                              <span>Gruppo: <strong className="text-stone-700">{currentQuizRegion?.massif}</strong></span>
+                              <span>Altezza: <strong className="text-amber-850">{currentQuizRegion?.height} m</strong></span>
+                            </div>
+                          </div>
+
+                          {/* Map Prompt */}
+                          {answeredState === null ? (
+                            selectedAnswerId === null ? (
+                              <div className="bg-stone-50 border border-dashed border-stone-300 p-4 rounded-xl text-center">
+                                <p className="text-xs font-sans text-stone-500 animate-pulse">
+                                  Tocca sulla mappa la regione corretta!
+                                </p>
+                              </div>
+                            ) : (
+                              <div className="bg-amber-50 border border-amber-250 p-3.5 rounded-xl text-center space-y-1 shadow-sm">
+                                <p className="text-xs font-sans text-stone-700">
+                                  Hai selezionato: <strong className="text-stone-900 font-extrabold">{PEAKS_DATA[selectedAnswerId]?.name}</strong>
+                                </p>
+                                <p className="text-[10px] font-medium text-amber-800 animate-pulse">
+                                  Tocca di nuovo la regione per confermare.
+                                </p>
+                              </div>
+                            )
+                          ) : (
+                            <motion.div
+                              initial={{ scale: 0.96, opacity: 0 }}
+                              animate={{ scale: 1, opacity: 1 }}
+                              className={`p-3 rounded-xl border flex items-start gap-2.5 ${
+                                answeredState === 'correct' 
+                                  ? 'border-emerald-250 bg-emerald-50 text-emerald-800' 
+                                  : 'border-rose-250 bg-rose-50 text-rose-800'
+                              }`}
+                            >
+                              <div className="mt-0.5">
+                                {answeredState === 'correct' ? <Check size={14} /> : <X size={14} />}
+                              </div>
+                              <div className="text-[11px] space-y-0.5 font-sans">
+                                <div className="font-extrabold">
+                                  {answeredState === 'correct' ? 'Risposta Esatta!' : 'Risposta Errata!'}
+                                </div>
+                                <p className="text-stone-600 leading-relaxed">
+                                  {answeredState === 'correct' 
+                                    ? `Il ${currentQuizRegion?.peak} è in ${currentQuizRegion?.name}.`
+                                    : `Si trova in ${currentQuizRegion?.name} (non in ${PEAKS_DATA[selectedAnswerId]?.name || 'quella selezionata'}).`
+                                  }
+                                </p>
+                              </div>
+                            </motion.div>
+                          )}
+                        </div>
+                      </div>
+
+                      {answeredState !== null && (
+                        <button
+                          onClick={nextQuestion}
+                          className="w-full mt-4 bg-stone-800 text-white py-2.5 rounded-xl font-bold text-xs hover:bg-amber-700 transition-all cursor-pointer"
+                        >
+                          {currentQuestionIndex + 1 < questions.length ? 'Prossima Domanda' : 'Vedi Risultati'}
+                        </button>
+                      )}
+                    </div>
+                  )}
+
+                  {/* End of Quiz Screen */}
+                  {quizFinished && (
+                    <div className="flex-1 flex flex-col justify-between py-1 overflow-y-auto max-h-[35vh] md:max-h-none">
+                      <div className="space-y-4 text-center">
+                        <div className={`p-3 rounded-full inline-block animate-bounce shadow-sm relative ${
+                          score === 20 
+                            ? 'bg-amber-100 border-2 border-amber-500 text-amber-600 shadow-amber-400/20 scale-105' 
+                            : 'bg-amber-50 border border-amber-250 text-amber-700'
+                        }`}>
+                          {score === 20 ? (
+                            <>
+                              <Award size={40} />
+                              <Sparkles size={12} className="absolute -top-1 -right-1 text-amber-500 animate-pulse" />
+                            </>
+                          ) : (
+                            <Award size={36} />
+                          )}
+                        </div>
+                        <div>
+                          <h3 className={`text-xl font-extrabold ${score === 20 ? 'text-amber-850' : 'text-stone-900'}`}>
+                            {score === 20 ? '🏆 Vittoria Perfetta!' : 'Quiz Completato!'}
+                          </h3>
+                          <p className="text-[10px] font-mono text-amber-800/80 mt-0.5 uppercase tracking-wider">
+                            {score === 20 ? 'Prontissima per l\'esame-Юля!' : 'Analisi dei Risultati'}
+                          </p>
+                        </div>
+
+                        {/* Result table */}
+                        <div className={`grid grid-cols-2 gap-2 border rounded-xl p-3 ${
+                          score === 20 ? 'bg-amber-50/40 border-amber-200/65 shadow-inner' : 'bg-stone-50 border-stone-200'
+                        }`}>
+                          <div>
+                            <div className="text-[8px] font-mono text-stone-500">PUNTEGGIO</div>
+                            <div className={`text-base font-bold ${score === 20 ? 'text-amber-950 font-black' : 'text-stone-900'}`}>{score} / {questions.length}</div>
+                          </div>
+                          <div>
+                            <div className="text-[8px] font-mono text-stone-500">PRECISIONE</div>
+                            <div className={`text-base font-bold ${score === 20 ? 'text-amber-850 font-black' : score >= 15 ? 'text-emerald-700' : score >= 10 ? 'text-amber-700' : 'text-rose-700'}`}>
+                              {Math.round((score / questions.length) * 100)}%
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Unlock card */}
+                        <div className={`border rounded-xl p-3 space-y-0.5 text-center font-sans ${
+                          score === 20 ? 'bg-amber-100/30 border-amber-300/40 shadow-sm' : 'bg-amber-50/50 border-amber-200'
+                        }`}>
+                          <div className="text-[9px] font-mono text-amber-800 uppercase tracking-widest font-black">Grado Raggiunto</div>
+                          <div className={`text-sm font-bold mt-0.5 ${score === 20 ? 'text-amber-950' : 'text-stone-900'}`}>
+                            {getBadge(score).emoji} {getBadge(score).title}
+                          </div>
+                          <p className="text-[11px] text-stone-600 pt-0.5 leading-relaxed">
+                            {getBadge(score).desc}
+                          </p>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={resetQuiz}
+                        className={`w-full mt-4 py-2.5 rounded-xl font-bold text-xs transition-all cursor-pointer ${
+                          score === 20 
+                            ? 'bg-amber-600 hover:bg-amber-700 text-white shadow-[0_4px_20px_rgba(217,119,6,0.25)]' 
+                            : 'bg-amber-700 text-white hover:bg-amber-800 shadow-[0_4px_15px_rgba(180,83,9,0.15)]'
+                        }`}
+                      >
+                        Torna alla Mappa
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           )}
 
@@ -1038,7 +1180,7 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="w-full max-w-6xl mx-auto px-6 pt-4 border-t border-stone-200 text-center text-[10px] font-mono text-stone-400">
+      <footer className="w-full max-w-6xl mx-auto px-6 pt-4 border-t border-stone-200 text-center text-[10px] font-mono text-stone-400 hidden md:block">
         SUMMIT QUEST &copy; {new Date().getFullYear()} &bull; MAPPA VETTORIALE INTERATTIVA DELLE MONTAGNE ITALIANE
       </footer>
 
