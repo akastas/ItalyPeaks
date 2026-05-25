@@ -47,3 +47,8 @@ body {
 .animate-float {
   animation: float 4s ease-in-out infinite;
 }
+
+/* Hover override for elevation paths */
+path.region-path:hover {
+  fill: #f3ebd5 !important;
+}

@@ -278,44 +278,82 @@ export default function App() {
   const selectedRegion = selectedRegionId ? PEAKS_DATA[selectedRegionId] : null;
 
   // Custom styling paths based on selection/game state
+  const getRegionBaseColor = (regionId) => {
+    const data = PEAKS_DATA[regionId];
+    if (!data) return 'hsl(38, 28%, 93%)';
+    const height = data.height;
+    const minHeight = 1151;
+    const maxHeight = 4810;
+    const pct = Math.max(0, Math.min(1, (height - minHeight) / (maxHeight - minHeight)));
+    const h = Math.round(38 - pct * 16);
+    const s = Math.round(28 + pct * 26);
+    const l = Math.round(93 - pct * 37);
+    return `hsl(${h}, ${s}%, ${l}%)`;
+  };
+
+  const getPathStyle = (regionId) => {
+    if (mode === 'study') {
+      if (selectedRegionId === regionId) {
+        return { fill: '#fde68a' }; // amber-200
+      }
+    } else if (mode === 'quiz' && quizStarted && !quizFinished) {
+      const correctAnswerId = questions[currentQuestionIndex];
+
+      if (answeredState !== null) {
+        if (regionId === correctAnswerId) {
+          return { fill: '#a7f3d0' }; // emerald-200
+        }
+        if (selectedAnswerId === regionId && answeredState === 'incorrect') {
+          return { fill: '#fecdd3' }; // rose-200
+        }
+      }
+
+      if (selectedAnswerId === regionId) {
+        return { fill: '#fde68a' }; // amber-200
+      }
+    }
+
+    return { fill: getRegionBaseColor(regionId) };
+  };
+
   const getPathClass = (regionId) => {
-    const baseClass = "transition-all duration-300 stroke-[1px] stroke-stone-300 cursor-pointer outline-none ";
+    const baseClass = "region-path transition-all duration-300 stroke-[1px] stroke-stone-300 cursor-pointer outline-none ";
 
     if (mode === 'study') {
       if (selectedRegionId === regionId) {
-        return baseClass + "fill-amber-200/80 stroke-amber-700 stroke-[1.5px]";
+        return baseClass + "stroke-amber-700 stroke-[1.5px]";
       }
-      return baseClass + "fill-stone-100 hover:fill-amber-100/60";
+      return baseClass;
     }
 
     if (mode === 'quiz') {
       if (!quizStarted || quizFinished) {
-        return baseClass + "fill-stone-50";
+        return baseClass;
       }
 
       const correctAnswerId = questions[currentQuestionIndex];
 
       if (answeredState !== null) {
         if (regionId === correctAnswerId) {
-          return baseClass + "fill-emerald-100/90 stroke-emerald-600 stroke-[1.5px]";
+          return baseClass + "stroke-emerald-600 stroke-[1.5px]";
         }
         if (selectedAnswerId === regionId && answeredState === 'incorrect') {
-          return baseClass + "fill-rose-100/90 stroke-rose-600 stroke-[1.5px]";
+          return baseClass + "stroke-rose-600 stroke-[1.5px]";
         }
       }
 
       if (selectedAnswerId === regionId) {
-        return baseClass + "fill-amber-200/80 stroke-amber-600 stroke-[1.5px]";
+        return baseClass + "stroke-amber-600 stroke-[1.5px]";
       }
 
-      return baseClass + "fill-stone-100 hover:fill-amber-100/40";
+      return baseClass;
     }
 
-    return baseClass + "fill-stone-100";
+    return baseClass;
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-between selection:bg-amber-200 selection:text-amber-900 pb-4 text-stone-800">
+    <div className="min-h-screen flex flex-col justify-between selection:bg-amber-200 selection:text-amber-900 pb-4 text-stone-850">
       
       {/* Top Header */}
       <header className="glass-panel border-b border-stone-200 py-4 px-6 relative z-10">
@@ -370,6 +408,7 @@ export default function App() {
                     key={region.id}
                     d={region.d}
                     className={getPathClass(region.id)}
+                    style={getPathStyle(region.id)}
                     onClick={() => handleRegionClick(region.id)}
                     title={region.name}
                   />
@@ -378,8 +417,26 @@ export default function App() {
             </svg>
           </div>
           
-          <div className="absolute bottom-4 left-4 bg-white/80 backdrop-blur border border-stone-200 px-3 py-1.5 rounded-lg text-[10px] font-mono text-stone-600 flex items-center gap-1.5 shadow-sm">
-            <Map size={11} /> 20 REGIONI D'ITALIA
+          {/* Legend and Region badge row */}
+          <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-6 pt-4 border-t border-stone-200/60">
+            <div className="bg-white/80 backdrop-blur border border-stone-200 px-3 py-1.5 rounded-lg text-[10px] font-mono text-stone-600 flex items-center gap-1.5 shadow-sm self-start sm:self-auto">
+              <Map size={11} /> 20 REGIONI D'ITALIA
+            </div>
+
+            {/* Elevation Legend */}
+            <div className="flex flex-col gap-1 sm:text-right">
+              <div className="text-[9px] font-mono text-stone-500 uppercase tracking-wider font-bold">Quota Vetta Principale</div>
+              <div className="flex items-center gap-2 justify-start sm:justify-end">
+                <span className="text-[9px] font-mono text-stone-400">1.151m</span>
+                <div 
+                  className="h-2 w-28 rounded-full border border-stone-200/50 shadow-inner"
+                  style={{
+                    background: 'linear-gradient(to right, hsl(38, 28%, 93%), hsl(30, 41%, 75%), hsl(22, 54%, 56%))'
+                  }}
+                />
+                <span className="text-[9px] font-mono text-stone-400">4.810m</span>
+              </div>
+            </div>
           </div>
         </section>
 
