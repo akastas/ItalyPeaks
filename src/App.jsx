@@ -164,33 +164,41 @@ const LAKES_DATA = [
 ];
 
 const COASTS_REGIONS_DATA = [
-  { name: "Sardegna", length: 1897, desc: "La regione con lo sviluppo costiero più esteso d'Italia. Spazia da baie sabbiose cristalline (Costa Smeralda) a falesie a picco sul mare." },
-  { name: "Sicilia", length: 1652, desc: "Estesa costa mediterranea che offre spiagge dorate immense, golfi profondi e spettacolari scogliere vulcaniche nere e calcaree (Scala dei Turchi)." },
-  { name: "Puglia", length: 870, desc: "Sviluppo costiero diviso tra l'Adriatico e lo Ionio. Celebre per le scogliere bianche del promontorio del Gargano e le calette del Salento." },
-  { name: "Calabria", length: 780, desc: "Bagnata dal Tirreno e dallo Ionio, alternando promontori rocciosi scoscesi (Tropea) e ampi litorali di sabbia e ciottoli." },
-  { name: "Toscana", length: 633, desc: "Comprende coste sabbiose a nord (Versilia), promontori rocciosi (Argentario) e le isole selvagge dell'Arcipelago Toscano (Elba, Giglio)." },
-  { name: "Campania", length: 500, desc: "Famosa nel mondo per i golfi di Napoli e Salerno e per le falesie scoscese ricoperte da borghi storici della Costiera Amalfitana." },
-  { name: "Lazio", length: 361, desc: "Prevalentemente pianeggiante e sabbiosa, con scogliere calcaree a picco sul mare nel Circeo e a Gaeta, oltre all'Arcipelago Pontino." },
-  { name: "Liguria", length: 350, desc: "Una costa stretta e frastagliata incastonata tra montagne e mare, caratterizzata da alte pareti rocciose, golfi dipinti e piccoli borghi marinari." },
-  { name: "Marche", length: 185, desc: "Sabbiosa per la maggior parte del litorale adriatico, interrotta unicamente dallo spettacolare promontorio calcareo del Monte Conero." },
-  { name: "Abruzzo", length: 170, desc: "Spiagge ampie a nord, che diventano suggestive insenature ghiaiose a sud, impreziosite dai trabocchi (macchine da pesca in legno)." },
-  { name: "Veneto", length: 158, desc: "Una costa sabbiosa bassa e laguna salmastra dominata dalla Laguna di Venezia e dalle foci dei grandi fiumi del Nord Italia." },
-  { name: "Emilia-Romagna", length: 141, desc: "Linearità sabbiosa totale: è la culla del turismo balneare europeo (Riviera Romagnola) con bassi fondali perfetti per le famiglie." },
-  { name: "Friuli-Venezia Giulia", length: 111, desc: "Lagune sabbiose ad ovest (Grado e Lignano) che mutano in coste alte e calcaree procedendo verso est e la baia di Trieste." },
-  { name: "Basilicata", length: 70, desc: "Divisa in due: coste basse e sabbiose sullo Ionio (Metaponto) e splendide calette rocciose e grotte sul Tirreno (Maratea)." },
-  { name: "Molise", length: 36, desc: "Il litorale più breve d'Italia, prevalentemente sabbioso e lineare, dominato dalla fortificazione marinara di Termoli." }
+  { id: "sardegna", name: "Sardegna", length: 1897, desc: "La regione con lo sviluppo costiero più esteso d'Italia. Spazia da baie sabbiose cristalline (Costa Smeralda) a falesie a picco sul mare." },
+  { id: "sicilia", name: "Sicilia", length: 1652, desc: "Estesa costa mediterranea che offre spiagge dorate immense, golfi profondi e spettacolari scogliere vulcaniche nere e calcaree (Scala dei Turchi)." },
+  { id: "puglia", name: "Puglia", length: 870, desc: "Sviluppo costiero diviso tra l'Adriatico e lo Ionio. Celebre per le scogliere bianche del promontorio del Gargano e le calette del Salento." },
+  { id: "calabria", name: "Calabria", length: 780, desc: "Bagnata dal Tirreno e dallo Ionio, alternando promontori rocciosi scoscesi (Tropea) e ampi litorali di sabbia e ciottoli." },
+  { id: "toscana", name: "Toscana", length: 633, desc: "Comprende coste sabbiose a nord (Versilia), promontori rocciosi (Argentario) e le isole selvagge dell'Arcipelago Toscano (Elba, Giglio)." },
+  { id: "campania", name: "Campania", length: 500, desc: "Famosa nel mondo per i golfi di Napoli e Salerno e per le falesie scoscese ricoperte da borghi storici della Costiera Amalfitana." },
+  { id: "lazio", name: "Lazio", length: 361, desc: "Prevalentemente pianeggiante e sabbiosa, con scogliere calcaree a picco sul mare nel Circeo e a Gaeta, oltre all'Arcipelago Pontino." },
+  { id: "liguria", name: "Liguria", length: 350, desc: "Una costa stretta e frastagliata incastonata tra montagne e mare, caratterizzata da alte pareti rocciose, golfi dipinti e piccoli borghi marinari." },
+  { id: "marche", name: "Marche", length: 185, desc: "Sabbiosa per la maggior parte del litorale adriatico, interrotta unicamente dallo spettacolare promontorio calcareo del Monte Conero." },
+  { id: "abruzzo", name: "Abruzzo", length: 170, desc: "Spiagge ampie a nord, che diventano suggestive insenature ghiaiose a sud, impreziosite dai trabocchi (macchine da pesca in legno)." },
+  { id: "veneto", name: "Veneto", length: 158, desc: "Una costa sabbiosa bassa e laguna salmastra dominata dalla Laguna di Venezia e dalle foci dei grandi fiumi del Nord Italia." },
+  { id: "emilia", name: "Emilia-Romagna", length: 141, desc: "Linearità sabbiosa totale: è la culla del turismo balneare europeo (Riviera Romagnola) con bassi fondali perfetti per le famiglie." },
+  { id: "friuli", name: "Friuli-Venezia Giulia", length: 111, desc: "Lagune sabbiose ad ovest (Grado e Lignano) che mutano in coste alte e calcaree procedendo verso est e la baia di Trieste." },
+  { id: "basilicata", name: "Basilicata", length: 70, desc: "Divisa in due: coste basse e sabbiose sullo Ionio (Metaponto) e splendide calette rocciose e grotte sul Tirreno (Maratea)." },
+  { id: "molise", name: "Molise", length: 36, desc: "Il litorale più breve d'Italia, prevalentemente sabbioso e lineare, dominato dalla fortificazione marinara di Termoli." }
 ];
 
 const COASTS_FAMOUS_DATA = [
-  { name: "Costiera Amalfitana", region: "Campania", length: "55 km", type: "Alta e rocciosa", desc: "Patrimonio UNESCO, celebre per i suoi borghi storici aggrappati alla roccia (Positano, Amalfi) e terrazzamenti coltivati a limoni." },
-  { name: "Cinque Terre", region: "Liguria", length: "15 km", type: "Alta e frastagliata", desc: "Cinque borghi storici incastonati in strette insenature rocciose, circondati da muretti a secco e vigneti a strapiombo sul Mar Ligure." },
-  { name: "Costa Smeralda", region: "Sardegna", length: "55 km", type: "Rocciosa e frastagliata", desc: "Tratto litoraneo della Gallura rinomato per le rocce granitiche rosa modellate dal vento, spiagge bianchissime e acque trasparenti." },
-  { name: "Costa dei Trabocchi", region: "Abruzzo", length: "60 km", type: "Mista (sabbia e scogliere)", desc: "Punteggiata da palafitte in legno stese sul mare per la pesca tradizionale, sospese sull'acqua e collegate alla terraferma da pontili." },
-  { name: "Riviera Romagnola", region: "Emilia-Romagna", length: "90 km", type: "Bassa e sabbiosa", desc: "Iconico litorale sabbioso caratterizzato da stabilimenti balneari attrezzati, ampi arenili, fondali bassi e una forte vocazione all'accoglienza." },
-  { name: "Costa degli Dei", region: "Calabria", length: "55 km", type: "Rocciosa con baie", desc: "Chiamata anche Costa Bella per le splendide insenature di sabbia bianca ai piedi di alte rupi tufacee, culminanti nello sperone di Tropea." },
-  { name: "Versilia", region: "Toscana", length: "20 km", type: "Bassa e sabbiosa", desc: "Famosa riviera a ridosso delle Alpi Apuane, celebre fin dal primo Novecento per i suoi caffè all'aperto, stabilimenti storici e vita mondana." },
-  { name: "Riviera del Conero", region: "Marche", length: "20 km", type: "Alta e rocciosa", desc: "Rara oasi rocciosa del litorale adriatico dove le pendici del Monte Conero cadono nel mare creando insenature selvagge e ciottolose." }
+  { name: "Costiera Amalfitana", region: "Campania", regionId: "campania", length: "55 km", type: "Alta e rocciosa", desc: "Patrimonio UNESCO, celebre per i suoi borghi storici aggrappati alla roccia (Positano, Amalfi) e terrazzamenti coltivati a limoni." },
+  { name: "Cinque Terre", region: "Liguria", regionId: "liguria", length: "15 km", type: "Alta e frastagliata", desc: "Cinque borghi storici incastonati in strette insenature rocciose, circondati da muretti a secco e vigneti a strapiombo sul Mar Ligure." },
+  { name: "Costa Smeralda", region: "Sardegna", regionId: "sardegna", length: "55 km", type: "Rocciosa e frastagliata", desc: "Tratto litoraneo della Gallura rinomato per le rocce granitiche rosa modellate dal vento, spiagge bianchissime e acque trasparenti." },
+  { name: "Costa dei Trabocchi", region: "Abruzzo", regionId: "abruzzo", length: "60 km", type: "Mista (sabbia e scogliere)", desc: "Punteggiata da palafitte in legno stese sul mare per la pesca tradizionale, sospese sull'acqua e collegate alla terraferma da pontili." },
+  { name: "Riviera Romagnola", region: "Emilia-Romagna", regionId: "emilia", length: "90 km", type: "Bassa e sabbiosa", desc: "Iconico litorale sabbioso caratterizzato da stabilimenti balneari attrezzati, ampi arenili, fondali bassi e una forte vocazione all'accoglienza." },
+  { name: "Costa degli Dei", region: "Calabria", regionId: "calabria", length: "55 km", type: "Rocciosa con baie", desc: "Chiamata anche Costa Bella per le splendide insenature di sabbia bianca ai piedi di alte rupi tufacee, culminanti nello sperone di Tropea." },
+  { name: "Versilia", region: "Toscana", regionId: "toscana", length: "20 km", type: "Bassa e sabbiosa", desc: "Famosa riviera a ridosso delle Alpi Apuane, celebre fin dal primo Novecento per i suoi caffè all'aperto, stabilimenti storici e vita mondana." },
+  { name: "Riviera del Conero", region: "Marche", regionId: "marche", length: "20 km", type: "Alta e rocciosa", desc: "Rara oasi rocciosa del litorale adriatico dove le pendici del Monte Conero cadono nel mare creando insenature selvagge e ciottolose." }
 ];
+
+const COASTS_TOP5_CENTROIDS = {
+  sardegna: { name: "Sardegna", rank: 1, length: "1.897 km", x: 105, y: 370 },
+  sicilia: { name: "Sicilia", rank: 2, length: "1.652 km", x: 290, y: 575 },
+  puglia: { name: "Puglia", rank: 3, length: "870 km", x: 445, y: 355 },
+  calabria: { name: "Calabria", rank: 4, length: "780 km", x: 390, y: 505 },
+  toscana: { name: "Toscana", rank: 5, length: "633 km", x: 215, y: 255 }
+};
 
 // Web Audio API Synthesizer for lightweight retro sounds
 const playSynthSound = (type) => {
@@ -250,9 +258,14 @@ export default function App() {
   // Collapsible panel state
   const [isMinimized, setIsMinimized] = useState(false);
 
-  // Auto-maximize on mode changes
+  // Top 5 Coast Overlay State
+  const [showTop5Coasts, setShowTop5Coasts] = useState(false);
+
+  // Auto-maximize and state reset on mode changes
   useEffect(() => {
     setIsMinimized(false);
+    setShowTop5Coasts(mode === 'coasts');
+    setSelectedRegionId(null);
   }, [mode]);
 
   // Quiz State
@@ -437,10 +450,28 @@ export default function App() {
     playSynthSound('correct');
   };
 
+  const getCoastRegionColor = (regionId) => {
+    const coastReg = COASTS_REGIONS_DATA.find(r => r.id === regionId);
+    if (!coastReg) return '#e5e7eb'; // landlocked
+    const length = coastReg.length;
+    const minL = 36;
+    const maxL = 1897;
+    const pct = Math.max(0, Math.min(1, (length - minL) / (maxL - minL)));
+    const h = Math.round(195 + pct * 25);
+    const s = Math.round(35 + pct * 35);
+    const l = Math.round(85 - pct * 35);
+    return `hsl(${h}, ${s}%, ${l}%)`;
+  };
+
   const handleRegionClick = (id) => {
     setIsMinimized(false);
     if (mode === 'study') {
       setSelectedRegionId(id);
+    } else if (mode === 'coasts') {
+      const isCoastal = COASTS_REGIONS_DATA.some(r => r.id === id);
+      if (isCoastal) {
+        setSelectedRegionId(id);
+      }
     } else if (mode === 'quiz' && quizStarted && !quizFinished && answeredState === null) {
       if (selectedAnswerId !== id) {
         setSelectedAnswerId(id);
@@ -483,6 +514,8 @@ export default function App() {
   const currentQuizRegionKey = quizStarted ? questions[currentQuestionIndex] : null;
   const currentQuizRegion = currentQuizRegionKey ? PEAKS_DATA[currentQuizRegionKey] : null;
   const selectedRegion = selectedRegionId ? PEAKS_DATA[selectedRegionId] : null;
+  const selectedCoastRegion = selectedRegionId ? COASTS_REGIONS_DATA.find(r => r.id === selectedRegionId) : null;
+  const famousInRegion = selectedRegionId ? COASTS_FAMOUS_DATA.filter(f => f.regionId === selectedRegionId) : [];
 
   // Custom styling paths based on selection/game state
   const getRegionBaseColor = (regionId) => {
@@ -503,6 +536,15 @@ export default function App() {
       if (selectedRegionId === regionId) {
         return { fill: '#fde68a' }; // amber-200
       }
+    } else if (mode === 'coasts') {
+      if (selectedRegionId === regionId) {
+        return { fill: '#fde68a' }; // Selected coast region -> highlighted gold
+      }
+      if (showTop5Coasts) {
+        const isTop5 = Object.keys(COASTS_TOP5_CENTROIDS).includes(regionId);
+        return { fill: isTop5 ? getCoastRegionColor(regionId) : '#f4eee2' };
+      }
+      return { fill: getCoastRegionColor(regionId) };
     } else if (mode === 'quiz' && quizStarted && !quizFinished) {
       const correctAnswerId = questions[currentQuestionIndex];
 
@@ -531,6 +573,23 @@ export default function App() {
         return baseClass + "stroke-amber-700 stroke-[1.5px]";
       }
       return baseClass;
+    }
+
+    if (mode === 'coasts') {
+      const isCoastal = COASTS_REGIONS_DATA.some(r => r.id === regionId);
+      const isTop5 = Object.keys(COASTS_TOP5_CENTROIDS).includes(regionId);
+      
+      let strokeClass = "stroke-stone-300 ";
+      if (selectedRegionId === regionId) {
+        strokeClass = "stroke-amber-600 stroke-[1.5px] ";
+      } else if (showTop5Coasts && isTop5) {
+        strokeClass = "stroke-sky-600 stroke-[1.5px] ";
+      }
+
+      if (!isCoastal) {
+        return "region-path transition-all duration-300 stroke-[1px] stroke-stone-200 outline-none opacity-40 ";
+      }
+      return "region-path transition-all duration-300 cursor-pointer outline-none " + strokeClass;
     }
 
     if (mode === 'quiz') {
@@ -685,36 +744,54 @@ export default function App() {
 
           {/* Mobile Top-Left Controls */}
           <div className="absolute top-4 left-4 flex flex-col gap-2 z-10 md:hidden pointer-events-auto">
-            {/* Elevation Toggle */}
-            <div className="flex items-center gap-2 bg-white/90 backdrop-blur border border-stone-200 px-2.5 py-1.5 rounded-lg shadow-sm">
-              <span className="text-[9px] font-mono text-stone-500 uppercase tracking-wider font-extrabold">Colori</span>
-              <button 
-                onClick={() => setShowElevation(!showElevation)}
-                title="Mostra/Nascondi Altezze Vette"
-                className={`w-7 h-4 rounded-full p-0.5 transition-colors duration-200 focus:outline-none cursor-pointer relative flex items-center
-                  ${showElevation ? 'bg-amber-700' : 'bg-stone-300'}`}
-              >
-                <div className={`bg-white w-3 h-3 rounded-full shadow-sm transform transition-transform duration-200
-                  ${showElevation ? 'translate-x-3' : 'translate-x-0'}`}
-                />
-              </button>
-            </div>
-
-            {/* Elevation Legend */}
-            {showElevation && (
+            {mode === 'coasts' ? (
               <div className="bg-white/90 backdrop-blur border border-stone-200 p-2 rounded-lg shadow-sm flex flex-col gap-1 w-fit">
-                <div className="text-[8px] font-mono text-stone-500 uppercase tracking-wider font-bold">Quota Vette</div>
+                <div className="text-[8px] font-mono text-stone-500 uppercase tracking-wider font-bold">Costa Reg.</div>
                 <div className="flex items-center gap-1">
-                  <span className="text-[8px] font-mono text-stone-400">1.1k</span>
+                  <span className="text-[8px] font-mono text-stone-400">36k</span>
                   <div 
                     className="h-1.5 w-14 rounded-full border border-stone-200/50"
                     style={{
-                      background: 'linear-gradient(to right, hsl(38, 28%, 93%), hsl(30, 41%, 75%), hsl(22, 54%, 56%))'
+                      background: 'linear-gradient(to right, hsl(195, 35%, 85%), hsl(220, 70%, 50%))'
                     }}
                   />
-                  <span className="text-[8px] font-mono text-stone-400">4.8k</span>
+                  <span className="text-[8px] font-mono text-stone-400">1.9k</span>
                 </div>
               </div>
+            ) : (
+              <>
+                {/* Elevation Toggle */}
+                <div className="flex items-center gap-2 bg-white/90 backdrop-blur border border-stone-200 px-2.5 py-1.5 rounded-lg shadow-sm">
+                  <span className="text-[9px] font-mono text-stone-500 uppercase tracking-wider font-extrabold">Colori</span>
+                  <button 
+                    onClick={() => setShowElevation(!showElevation)}
+                    title="Mostra/Nascondi Altezze Vette"
+                    className={`w-7 h-4 rounded-full p-0.5 transition-colors duration-200 focus:outline-none cursor-pointer relative flex items-center
+                      ${showElevation ? 'bg-amber-700' : 'bg-stone-300'}`}
+                  >
+                    <div className={`bg-white w-3 h-3 rounded-full shadow-sm transform transition-transform duration-200
+                      ${showElevation ? 'translate-x-3' : 'translate-x-0'}`}
+                    />
+                  </button>
+                </div>
+
+                {/* Elevation Legend */}
+                {showElevation && (
+                  <div className="bg-white/90 backdrop-blur border border-stone-200 p-2 rounded-lg shadow-sm flex flex-col gap-1 w-fit">
+                    <div className="text-[8px] font-mono text-stone-500 uppercase tracking-wider font-bold">Quota Vette</div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-[8px] font-mono text-stone-400">1.1k</span>
+                      <div 
+                        className="h-1.5 w-14 rounded-full border border-stone-200/50"
+                        style={{
+                          background: 'linear-gradient(to right, hsl(38, 28%, 93%), hsl(30, 41%, 75%), hsl(22, 54%, 56%))'
+                        }}
+                      />
+                      <span className="text-[8px] font-mono text-stone-400">4.8k</span>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </div>
 
@@ -750,47 +827,117 @@ export default function App() {
                     title={region.name}
                   />
                 ))}
+
+                {/* Top 5 Coast Overlays */}
+                {mode === 'coasts' && showTop5Coasts && (
+                  Object.entries(COASTS_TOP5_CENTROIDS).map(([regionId, centroid]) => (
+                    <g 
+                      key={regionId}
+                      transform={`translate(${centroid.x}, ${centroid.y})`}
+                      className="cursor-pointer select-none opacity-95 hover:opacity-100 transition-opacity pointer-events-auto"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRegionClick(regionId);
+                      }}
+                    >
+                      <rect
+                        x="-55"
+                        y="-20"
+                        width="110"
+                        height="32"
+                        rx="6"
+                        fill="#fcfbf8"
+                        stroke="#0284c7"
+                        strokeWidth="1.2"
+                        className="shadow-sm"
+                      />
+                      <text
+                        x="0"
+                        y="-8"
+                        textAnchor="middle"
+                        className="font-bold text-[8.5px] fill-stone-900 font-sans"
+                      >
+                        {centroid.rank}. {centroid.name}
+                      </text>
+                      <text
+                        x="0"
+                        y="6"
+                        textAnchor="middle"
+                        className="font-mono text-[7.5px] fill-sky-850 font-extrabold"
+                      >
+                        {centroid.length}
+                      </text>
+                    </g>
+                  ))
+                )}
               </g>
             </svg>
           </div>
           
           {/* Legend and Region badge row (Desktop only) */}
           <div className="hidden md:flex w-full flex-col sm:flex-row sm:items-center justify-between gap-4 mt-6 pt-4 border-t border-stone-200/60 relative z-10">
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="bg-white/80 backdrop-blur border border-stone-200 px-3 py-1.5 rounded-lg text-[10px] font-mono text-stone-600 flex items-center gap-1.5 shadow-sm">
-                <Map size={11} /> 20 REGIONI D'ITALIA
-              </div>
+            {mode === 'coasts' ? (
+              <>
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="bg-white/80 backdrop-blur border border-stone-200 px-3 py-1.5 rounded-lg text-[10px] font-mono text-stone-600 flex items-center gap-1.5 shadow-sm">
+                    <Waves size={11} className="text-sky-600" /> 15 REGIONI COSTIERE
+                  </div>
+                </div>
 
-              {/* Elevation Toggle */}
-              <div className="flex items-center gap-2 bg-white/80 backdrop-blur border border-stone-200 px-2.5 py-1.5 rounded-lg shadow-sm">
-                <span className="text-[9px] font-mono text-stone-500 uppercase tracking-wider font-extrabold">Colori Altezze</span>
-                <button 
-                  onClick={() => setShowElevation(!showElevation)}
-                  title="Mostra/Nascondi Altezze Vette"
-                  className={`w-7 h-4 rounded-full p-0.5 transition-colors duration-200 focus:outline-none cursor-pointer relative flex items-center
-                    ${showElevation ? 'bg-amber-700' : 'bg-stone-300'}`}
-                >
-                  <div className={`bg-white w-3 h-3 rounded-full shadow-sm transform transition-transform duration-200
-                    ${showElevation ? 'translate-x-3' : 'translate-x-0'}`}
-                  />
-                </button>
-              </div>
-            </div>
+                {/* Coastline Legend */}
+                <div className="flex flex-col gap-1 sm:text-right">
+                  <div className="text-[9px] font-mono text-stone-500 uppercase tracking-wider font-bold">Sviluppo Costiero</div>
+                  <div className="flex items-center gap-2 justify-start sm:justify-end">
+                    <span className="text-[9px] font-mono text-stone-400">36 km</span>
+                    <div 
+                      className="h-2 w-28 rounded-full border border-stone-200/50 shadow-inner"
+                      style={{
+                        background: 'linear-gradient(to right, hsl(195, 35%, 85%), hsl(206, 50%, 69%), hsl(220, 70%, 50%))'
+                      }}
+                    />
+                    <span className="text-[9px] font-mono text-stone-400">1.897 km</span>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="bg-white/80 backdrop-blur border border-stone-200 px-3 py-1.5 rounded-lg text-[10px] font-mono text-stone-600 flex items-center gap-1.5 shadow-sm">
+                    <Map size={11} /> 20 REGIONI D'ITALIA
+                  </div>
 
-            {/* Elevation Legend */}
-            <div className={`flex flex-col gap-1 sm:text-right transition-all duration-300 ${showElevation ? 'opacity-100' : 'opacity-30 pointer-events-none'}`}>
-              <div className="text-[9px] font-mono text-stone-500 uppercase tracking-wider font-bold">Quota Vetta Principale</div>
-              <div className="flex items-center gap-2 justify-start sm:justify-end">
-                <span className="text-[9px] font-mono text-stone-400">1.151m</span>
-                <div 
-                  className="h-2 w-28 rounded-full border border-stone-200/50 shadow-inner"
-                  style={{
-                    background: 'linear-gradient(to right, hsl(38, 28%, 93%), hsl(30, 41%, 75%), hsl(22, 54%, 56%))'
-                  }}
-                />
-                <span className="text-[9px] font-mono text-stone-400">4.810m</span>
-              </div>
-            </div>
+                  {/* Elevation Toggle */}
+                  <div className="flex items-center gap-2 bg-white/80 backdrop-blur border border-stone-200 px-2.5 py-1.5 rounded-lg shadow-sm">
+                    <span className="text-[9px] font-mono text-stone-500 uppercase tracking-wider font-extrabold">Colori Altezze</span>
+                    <button 
+                      onClick={() => setShowElevation(!showElevation)}
+                      title="Mostra/Nascondi Altezze Vette"
+                      className={`w-7 h-4 rounded-full p-0.5 transition-colors duration-200 focus:outline-none cursor-pointer relative flex items-center
+                        ${showElevation ? 'bg-amber-700' : 'bg-stone-300'}`}
+                    >
+                      <div className={`bg-white w-3 h-3 rounded-full shadow-sm transform transition-transform duration-200
+                        ${showElevation ? 'translate-x-3' : 'translate-x-0'}`}
+                      />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Elevation Legend */}
+                <div className={`flex flex-col gap-1 sm:text-right transition-all duration-300 ${showElevation ? 'opacity-100' : 'opacity-30 pointer-events-none'}`}>
+                  <div className="text-[9px] font-mono text-stone-500 uppercase tracking-wider font-bold">Quota Vetta Principale</div>
+                  <div className="flex items-center gap-2 justify-start sm:justify-end">
+                    <span className="text-[9px] font-mono text-stone-400">1.151m</span>
+                    <div 
+                      className="h-2 w-28 rounded-full border border-stone-200/50 shadow-inner"
+                      style={{
+                        background: 'linear-gradient(to right, hsl(38, 28%, 93%), hsl(30, 41%, 75%), hsl(22, 54%, 56%))'
+                      }}
+                    />
+                    <span className="text-[9px] font-mono text-stone-400">4.810m</span>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </section>
 
@@ -1002,7 +1149,7 @@ export default function App() {
 
           {/* COSTE D'ITALIA PANEL */}
           {mode === 'coasts' && (
-            <div className="glass-panel rounded-2xl p-4 md:p-6 flex flex-col pointer-events-auto transition-all duration-300 shadow-lg md:shadow-sm">
+            <div className="glass-panel rounded-2xl p-4 md:p-6 flex flex-col justify-between pointer-events-auto transition-all duration-300 shadow-lg md:shadow-sm">
               {isMinimized ? (
                 <div 
                   onClick={() => setIsMinimized(false)}
@@ -1011,14 +1158,19 @@ export default function App() {
                   <div className="flex items-center gap-2">
                     <Waves size={16} className="text-amber-700" />
                     <span className="text-xs font-bold text-stone-900">
-                      Coste: 7.914 km di sviluppo costiero
+                      {selectedCoastRegion 
+                        ? `Coste: ${selectedCoastRegion.name}` 
+                        : showTop5Coasts 
+                          ? "Coste: Top 5 Regioni Evidenziate" 
+                          : "Coste: 7.914 km di litorale"
+                      }
                     </span>
                   </div>
                   <ChevronUp size={16} className="text-stone-500" />
                 </div>
               ) : (
                 <>
-                  <div className="flex items-start justify-between">
+                  <div className="flex items-start justify-between border-b border-stone-100 pb-2 mb-3">
                     <div>
                       <span className="text-[10px] font-mono text-amber-800 font-extrabold tracking-wider uppercase flex items-center gap-1">
                         <Waves size={12} /> Sviluppo Costiero
@@ -1034,64 +1186,146 @@ export default function App() {
                     </button>
                   </div>
                   
-                  <p className="text-[11px] text-stone-500 mt-1 font-sans hidden md:block">
-                    L'Italia è circondata da circa 7.914 km di litorale, diviso tra 15 regioni costiere e lambito da 6 mari diversi.
-                  </p>
+                  <AnimatePresence mode="wait">
+                    {selectedCoastRegion ? (
+                      <motion.div
+                        key={selectedRegionId}
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -15 }}
+                        className="space-y-4 flex-1 overflow-y-auto"
+                      >
+                        <div>
+                          <span className="text-[10px] font-mono text-sky-800 font-extrabold tracking-wider uppercase">Regione Costiera</span>
+                          <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-stone-900 mt-0.5">{selectedCoastRegion.name}</h2>
+                        </div>
 
-                  {/* Scrollable container for lists */}
-                  <div className="flex-1 overflow-y-auto space-y-4 max-h-[30vh] md:max-h-[52vh] pr-1 scrollbar-thin mt-3">
-                    {/* Famous Stretches List */}
-                    <div className="space-y-2">
-                      <h3 className="text-[9px] font-mono text-stone-500 uppercase tracking-widest font-black flex items-center gap-1.5">
-                        🌊 Tratti Costieri Celebri
-                      </h3>
-                      <div className="space-y-2">
-                        {COASTS_FAMOUS_DATA.map((coast) => (
-                          <div key={coast.name} className="bg-amber-50/40 border border-amber-900/5 rounded-xl p-2.5 space-y-1 hover:border-amber-700/20 transition-all">
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs font-bold text-stone-900">
-                                {coast.name}
-                              </span>
-                              <span className="text-[9px] font-mono font-bold text-amber-800 bg-amber-100/60 px-2 py-0.5 rounded-full">
-                                {coast.length}
-                              </span>
-                            </div>
-                            <div className="grid grid-cols-2 gap-1 text-[8px] font-mono text-stone-500">
-                              <div>Regione: <strong className="text-stone-700">{coast.region}</strong></div>
-                              <div>Tipo: <strong className="text-stone-700">{coast.type}</strong></div>
-                            </div>
-                            <p className="text-[9px] text-stone-500 leading-relaxed font-sans pt-1 border-t border-dashed border-stone-200/50 mt-1">
-                              {coast.desc}
-                            </p>
+                        <div className="space-y-3">
+                          {/* Length Card */}
+                          <div className="bg-sky-50/50 border border-sky-900/5 rounded-xl p-3 space-y-0.5">
+                            <span className="text-[9px] font-mono text-sky-850 uppercase tracking-widest flex items-center gap-1.5">
+                              <Waves size={11} className="text-sky-750" /> Estensione Costa
+                            </span>
+                            <div className="text-lg font-extrabold text-sky-950">{selectedCoastRegion.length.toLocaleString()} km</div>
                           </div>
-                        ))}
-                      </div>
-                    </div>
 
-                    {/* Regions Coastline Development List */}
-                    <div className="space-y-2 pt-1">
-                      <h3 className="text-[9px] font-mono text-stone-500 uppercase tracking-widest font-black flex items-center gap-1.5">
-                        📍 Lunghezza Coste per Regione
-                      </h3>
-                      <div className="space-y-1.5">
-                        {COASTS_REGIONS_DATA.map((reg, idx) => (
-                          <div key={reg.name} className="bg-stone-50 border border-stone-200/60 rounded-xl p-2.5 space-y-1 hover:border-amber-700/20 transition-all">
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs font-bold text-stone-900">
-                                {idx + 1}. {reg.name}
-                              </span>
-                              <span className="text-[9px] font-mono font-bold text-stone-500 bg-stone-150 px-2 py-0.5 rounded-full">
-                                {reg.length} km
-                              </span>
-                            </div>
-                            <p className="text-[9px] text-stone-500 leading-relaxed font-sans mt-0.5">
-                              {reg.desc}
-                            </p>
+                          {/* Description */}
+                          <div className="bg-stone-50/40 border border-stone-200/40 rounded-xl p-3 text-xs font-sans text-stone-600 leading-relaxed max-h-[12vh] md:max-h-none overflow-y-auto">
+                            {selectedCoastRegion.desc}
                           </div>
-                        ))}
+
+                          {/* Famous Stretches in Region */}
+                          {famousInRegion.length > 0 && (
+                            <div className="space-y-2 pt-1">
+                              <span className="text-[9px] font-mono text-stone-500 uppercase tracking-widest font-black">Tratti Celebri in Regione</span>
+                              <div className="space-y-2">
+                                {famousInRegion.map((coast) => (
+                                  <div key={coast.name} className="bg-amber-50/40 border border-amber-900/5 rounded-xl p-2.5 space-y-0.5">
+                                    <div className="flex items-center justify-between">
+                                      <span className="text-xs font-bold text-stone-900">{coast.name}</span>
+                                      <span className="text-[9px] font-mono font-bold text-amber-800 bg-amber-100/60 px-2 py-0.5 rounded-full">{coast.length}</span>
+                                    </div>
+                                    <div className="text-[8px] font-mono text-stone-500">Tipo: {coast.type}</div>
+                                    <p className="text-[9px] text-stone-550 leading-relaxed pt-1 border-t border-dashed border-stone-200/50 mt-1">{coast.desc}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    ) : (
+                      <div className="space-y-4 flex-1 flex flex-col min-h-0">
+                        {/* Top 5 toggle */}
+                        <button
+                          onClick={() => setShowTop5Coasts(!showTop5Coasts)}
+                          className={`w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-sm
+                            ${showTop5Coasts 
+                              ? 'bg-sky-600 text-white border-sky-600 shadow-sky-500/10' 
+                              : 'bg-white border-stone-250 text-stone-700 hover:bg-stone-50'}`}
+                        >
+                          <Waves size={14} />
+                          {showTop5Coasts ? "Nascondi Top 5 sulla Mappa" : "Evidenzia Top 5 sulla Mappa"}
+                        </button>
+
+                        <p className="text-[11px] text-stone-500 font-sans hidden md:block">
+                          L'Italia è circondata da circa 7.914 km di litorale, diviso tra 15 regioni costiere e lambito da 6 mari diversi.
+                        </p>
+
+                        {/* Scrollable container for lists */}
+                        <div className="flex-1 overflow-y-auto space-y-4 max-h-[25vh] md:max-h-[48vh] pr-1 scrollbar-thin">
+                          {/* Famous Stretches List */}
+                          <div className="space-y-2">
+                            <h3 className="text-[9px] font-mono text-stone-500 uppercase tracking-widest font-black flex items-center gap-1.5">
+                              🌊 Tratti Costieri Celebri
+                            </h3>
+                            <div className="space-y-2">
+                              {COASTS_FAMOUS_DATA.map((coast) => (
+                                <div 
+                                  key={coast.name} 
+                                  onClick={() => setSelectedRegionId(coast.regionId)}
+                                  className="bg-amber-50/40 border border-amber-900/5 rounded-xl p-2.5 space-y-1 hover:border-sky-600/35 transition-all cursor-pointer"
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-xs font-bold text-stone-900">
+                                      {coast.name}
+                                    </span>
+                                    <span className="text-[9px] font-mono font-bold text-amber-800 bg-amber-100/60 px-2 py-0.5 rounded-full">
+                                      {coast.length}
+                                    </span>
+                                  </div>
+                                  <div className="grid grid-cols-2 gap-1 text-[8px] font-mono text-stone-500">
+                                    <div>Regione: <strong className="text-stone-700">{coast.region}</strong></div>
+                                    <div>Tipo: <strong className="text-stone-700">{coast.type}</strong></div>
+                                  </div>
+                                  <p className="text-[9px] text-stone-500 leading-relaxed font-sans pt-1 border-t border-dashed border-stone-200/50 mt-1">
+                                    {coast.desc}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Regions Coastline Development List */}
+                          <div className="space-y-2 pt-1">
+                            <h3 className="text-[9px] font-mono text-stone-500 uppercase tracking-widest font-black flex items-center gap-1.5">
+                              📍 Lunghezza Coste per Regione
+                            </h3>
+                            <div className="space-y-1.5">
+                              {COASTS_REGIONS_DATA.map((reg, idx) => (
+                                <div 
+                                  key={reg.name} 
+                                  onClick={() => setSelectedRegionId(reg.id)}
+                                  className="bg-stone-50 border border-stone-200/60 rounded-xl p-2.5 space-y-1 hover:border-sky-600/35 transition-all cursor-pointer"
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-xs font-bold text-stone-900">
+                                      {idx + 1}. {reg.name}
+                                    </span>
+                                    <span className="text-[9px] font-mono font-bold text-stone-500 bg-stone-150 px-2 py-0.5 rounded-full">
+                                      {reg.length} km
+                                    </span>
+                                  </div>
+                                  <p className="text-[9px] text-stone-500 leading-relaxed font-sans mt-0.5">
+                                    {reg.desc}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
+                    )}
+                  </AnimatePresence>
+
+                  {selectedRegionId && (
+                    <button
+                      onClick={() => setSelectedRegionId(null)}
+                      className="w-full mt-4 py-2 bg-stone-100 border border-stone-200 rounded-xl text-xs font-mono text-stone-500 hover:text-stone-850 hover:border-stone-300 transition-all cursor-pointer pointer-events-auto"
+                    >
+                      Rilascia Selezione
+                    </button>
+                  )}
                 </>
               )}
             </div>
