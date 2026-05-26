@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mountain, Trophy, Sparkles, Map, BookOpen, HelpCircle, Compass, Check, X, RotateCcw, Award, ChevronRight, Waves, ChevronUp, ChevronDown } from 'lucide-react';
 import { ITALY_REGIONS_PATHS } from './italyPaths';
@@ -288,6 +288,7 @@ export default function App() {
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const pinchRef = useRef(null);
 
   const zoomIn = () => {
     setZoom(prev => Math.min(3, prev + 0.4));
@@ -314,10 +315,16 @@ export default function App() {
 
   const handleMouseMove = (e) => {
     if (!isDragging || zoom === 1) return;
-    setPan({
-      x: e.clientX - dragStart.x,
-      y: e.clientY - dragStart.y
-    });
+    let newPanX = e.clientX - dragStart.x;
+    let newPanY = e.clientY - dragStart.y;
+    
+    // Constrain pan coordinates so map doesn't drift completely off screen
+    const maxPanX = (zoom - 1) * 200;
+    const maxPanY = (zoom - 1) * 250;
+    newPanX = Math.min(maxPanX, Math.max(-maxPanX, newPanX));
+    newPanY = Math.min(maxPanY, Math.max(-maxPanY, newPanY));
+    
+    setPan({ x: newPanX, y: newPanY });
   };
 
   const handleMouseUp = () => {
@@ -325,24 +332,114 @@ export default function App() {
   };
 
   const handleTouchStart = (e) => {
-    if (zoom === 1) return;
-    setIsDragging(true);
-    setDragStart({ 
-      x: e.touches[0].clientX - pan.x, 
-      y: e.touches[0].clientY - pan.y 
-    });
+    if (e.touches.length === 2) {
+      // Pinch to zoom start: calculate initial distance and midpoint
+      const t0 = e.touches[0];
+      const t1 = e.touches[1];
+      const dx = t0.clientX - t1.clientX;
+      const dy = t0.clientY - t1.clientY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      
+      const midX = (t0.clientX + t1.clientX) / 2;
+      const midY = (t0.clientY + t1.clientY) / 2;
+      
+      const container = document.getElementById('map-container');
+      let midOffset = { x: 0, y: 0 };
+      if (container) {
+        const rect = container.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        midOffset = { x: midX - centerX, y: midY - centerY };
+      }
+      
+      pinchRef.current = {
+        startDist: dist,
+        startZoom: zoom,
+        startPan: { x: pan.x, y: pan.y },
+        startMidOffset: midOffset
+      };
+      setIsDragging(true);
+    } else if (e.touches.length === 1 && zoom > 1) {
+      // Normal single touch drag/pan
+      setIsDragging(true);
+      setDragStart({ 
+        x: e.touches[0].clientX - pan.x, 
+        y: e.touches[0].clientY - pan.y 
+      });
+      pinchRef.current = null;
+    }
   };
 
   const handleTouchMove = (e) => {
-    if (!isDragging || zoom === 1) return;
-    setPan({
-      x: e.touches[0].clientX - dragStart.x,
-      y: e.touches[0].clientY - dragStart.y
-    });
+    if (e.touches.length === 2 && pinchRef.current) {
+      // Pinch to zoom move: recalculate zoom scale and midpoint shift
+      const t0 = e.touches[0];
+      const t1 = e.touches[1];
+      const dx = t0.clientX - t1.clientX;
+      const dy = t0.clientY - t1.clientY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      
+      const midX = (t0.clientX + t1.clientX) / 2;
+      const midY = (t0.clientY + t1.clientY) / 2;
+      
+      const container = document.getElementById('map-container');
+      let midOffset = { x: 0, y: 0 };
+      if (container) {
+        const rect = container.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        midOffset = { x: midX - centerX, y: midY - centerY };
+      }
+      
+      const { startDist, startZoom, startPan, startMidOffset } = pinchRef.current;
+      if (startDist > 0) {
+        const ratio = dist / startDist;
+        const newZoom = Math.min(3, Math.max(1, startZoom * ratio));
+        
+        let newPanX = 0;
+        let newPanY = 0;
+        
+        if (newZoom > 1) {
+          newPanX = midOffset.x - (startMidOffset.x - startPan.x) * (newZoom / startZoom);
+          newPanY = midOffset.y - (startMidOffset.y - startPan.y) * (newZoom / startZoom);
+          
+          // Constrain pan coordinates
+          const maxPanX = (newZoom - 1) * 200;
+          const maxPanY = (newZoom - 1) * 250;
+          newPanX = Math.min(maxPanX, Math.max(-maxPanX, newPanX));
+          newPanY = Math.min(maxPanY, Math.max(-maxPanY, newPanY));
+        }
+        
+        setZoom(newZoom);
+        setPan({ x: newPanX, y: newPanY });
+      }
+    } else if (e.touches.length === 1 && isDragging && zoom > 1 && !pinchRef.current) {
+      // Normal single touch drag/pan
+      let newPanX = e.touches[0].clientX - dragStart.x;
+      let newPanY = e.touches[0].clientY - dragStart.y;
+      
+      // Constrain pan coordinates
+      const maxPanX = (zoom - 1) * 200;
+      const maxPanY = (zoom - 1) * 250;
+      newPanX = Math.min(maxPanX, Math.max(-maxPanX, newPanX));
+      newPanY = Math.min(maxPanY, Math.max(-maxPanY, newPanY));
+      
+      setPan({ x: newPanX, y: newPanY });
+    }
   };
 
-  const handleTouchEnd = () => {
-    setIsDragging(false);
+  const handleTouchEnd = (e) => {
+    if (e.touches.length === 0) {
+      setIsDragging(false);
+      pinchRef.current = null;
+    } else if (e.touches.length === 1) {
+      // Smoothly transition back to single-touch panning when one finger is lifted
+      setDragStart({ 
+        x: e.touches[0].clientX - pan.x, 
+        y: e.touches[0].clientY - pan.y 
+      });
+      pinchRef.current = null;
+    }
   };
 
   // Confetti Canvas animation for perfect 20/20 win
@@ -850,7 +947,7 @@ export default function App() {
             )}
           </div>
 
-          <div className="w-full max-w-[380px] aspect-[560/663] relative overflow-hidden flex items-center justify-center">
+          <div id="map-container" className="w-full max-w-[380px] aspect-[560/663] relative overflow-hidden flex items-center justify-center">
             <svg 
               viewBox="0 0 560.512 663.114" 
               className={`w-full h-full drop-shadow-[0_10px_25px_rgba(45,39,34,0.12)] select-none outline-none
