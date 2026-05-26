@@ -163,6 +163,35 @@ const LAKES_DATA = [
   { name: "Lago di Bolsena", area: 113.5, depth: 151, regions: "Lazio", desc: "Il lago vulcanico più grande d'Europa. Si è formato nella caldera spenta dei monti Volsini ed è famoso per la limpidezza delle sue acque." }
 ];
 
+const COASTS_REGIONS_DATA = [
+  { name: "Sardegna", length: 1897, desc: "La regione con lo sviluppo costiero più esteso d'Italia. Spazia da baie sabbiose cristalline (Costa Smeralda) a falesie a picco sul mare." },
+  { name: "Sicilia", length: 1652, desc: "Estesa costa mediterranea che offre spiagge dorate immense, golfi profondi e spettacolari scogliere vulcaniche nere e calcaree (Scala dei Turchi)." },
+  { name: "Puglia", length: 870, desc: "Sviluppo costiero diviso tra l'Adriatico e lo Ionio. Celebre per le scogliere bianche del promontorio del Gargano e le calette del Salento." },
+  { name: "Calabria", length: 780, desc: "Bagnata dal Tirreno e dallo Ionio, alternando promontori rocciosi scoscesi (Tropea) e ampi litorali di sabbia e ciottoli." },
+  { name: "Toscana", length: 633, desc: "Comprende coste sabbiose a nord (Versilia), promontori rocciosi (Argentario) e le isole selvagge dell'Arcipelago Toscano (Elba, Giglio)." },
+  { name: "Campania", length: 500, desc: "Famosa nel mondo per i golfi di Napoli e Salerno e per le falesie scoscese ricoperte da borghi storici della Costiera Amalfitana." },
+  { name: "Lazio", length: 361, desc: "Prevalentemente pianeggiante e sabbiosa, con scogliere calcaree a picco sul mare nel Circeo e a Gaeta, oltre all'Arcipelago Pontino." },
+  { name: "Liguria", length: 350, desc: "Una costa stretta e frastagliata incastonata tra montagne e mare, caratterizzata da alte pareti rocciose, golfi dipinti e piccoli borghi marinari." },
+  { name: "Marche", length: 185, desc: "Sabbiosa per la maggior parte del litorale adriatico, interrotta unicamente dallo spettacolare promontorio calcareo del Monte Conero." },
+  { name: "Abruzzo", length: 170, desc: "Spiagge ampie a nord, che diventano suggestive insenature ghiaiose a sud, impreziosite dai trabocchi (macchine da pesca in legno)." },
+  { name: "Veneto", length: 158, desc: "Una costa sabbiosa bassa e laguna salmastra dominata dalla Laguna di Venezia e dalle foci dei grandi fiumi del Nord Italia." },
+  { name: "Emilia-Romagna", length: 141, desc: "Linearità sabbiosa totale: è la culla del turismo balneare europeo (Riviera Romagnola) con bassi fondali perfetti per le famiglie." },
+  { name: "Friuli-Venezia Giulia", length: 111, desc: "Lagune sabbiose ad ovest (Grado e Lignano) che mutano in coste alte e calcaree procedendo verso est e la baia di Trieste." },
+  { name: "Basilicata", length: 70, desc: "Divisa in due: coste basse e sabbiose sullo Ionio (Metaponto) e splendide calette rocciose e grotte sul Tirreno (Maratea)." },
+  { name: "Molise", length: 36, desc: "Il litorale più breve d'Italia, prevalentemente sabbioso e lineare, dominato dalla fortificazione marinara di Termoli." }
+];
+
+const COASTS_FAMOUS_DATA = [
+  { name: "Costiera Amalfitana", region: "Campania", length: "55 km", type: "Alta e rocciosa", desc: "Patrimonio UNESCO, celebre per i suoi borghi storici aggrappati alla roccia (Positano, Amalfi) e terrazzamenti coltivati a limoni." },
+  { name: "Cinque Terre", region: "Liguria", length: "15 km", type: "Alta e frastagliata", desc: "Cinque borghi storici incastonati in strette insenature rocciose, circondati da muretti a secco e vigneti a strapiombo sul Mar Ligure." },
+  { name: "Costa Smeralda", region: "Sardegna", length: "55 km", type: "Rocciosa e frastagliata", desc: "Tratto litoraneo della Gallura rinomato per le rocce granitiche rosa modellate dal vento, spiagge bianchissime e acque trasparenti." },
+  { name: "Costa dei Trabocchi", region: "Abruzzo", length: "60 km", type: "Mista (sabbia e scogliere)", desc: "Punteggiata da palafitte in legno stese sul mare per la pesca tradizionale, sospese sull'acqua e collegate alla terraferma da pontili." },
+  { name: "Riviera Romagnola", region: "Emilia-Romagna", length: "90 km", type: "Bassa e sabbiosa", desc: "Iconico litorale sabbioso caratterizzato da stabilimenti balneari attrezzati, ampi arenili, fondali bassi e una forte vocazione all'accoglienza." },
+  { name: "Costa degli Dei", region: "Calabria", length: "55 km", type: "Rocciosa con baie", desc: "Chiamata anche Costa Bella per le splendide insenature di sabbia bianca ai piedi di alte rupi tufacee, culminanti nello sperone di Tropea." },
+  { name: "Versilia", region: "Toscana", length: "20 km", type: "Bassa e sabbiosa", desc: "Famosa riviera a ridosso delle Alpi Apuane, celebre fin dal primo Novecento per i suoi caffè all'aperto, stabilimenti storici e vita mondana." },
+  { name: "Riviera del Conero", region: "Marche", length: "20 km", type: "Alta e rocciosa", desc: "Rara oasi rocciosa del litorale adriatico dove le pendici del Monte Conero cadono nel mare creando insenature selvagge e ciottolose." }
+];
+
 // Web Audio API Synthesizer for lightweight retro sounds
 const playSynthSound = (type) => {
   try {
@@ -557,7 +586,7 @@ export default function App() {
               onClick={() => { if (!quizStarted) { setMode('study'); setSelectedRegionId(null); } }}
               disabled={quizStarted}
               className={`px-4 py-1.5 rounded text-xs font-semibold font-mono tracking-wider transition-all cursor-pointer
-                ${mode === 'study' ? 'bg-amber-700 text-white shadow-sm' : 'text-stone-500 hover:text-stone-800 disabled:opacity-50'}`}
+                ${mode === 'study' ? 'bg-amber-700 text-white shadow-sm' : 'text-stone-500 hover:text-stone-850 disabled:opacity-50'}`}
             >
               STUDY MAP
             </button>
@@ -565,7 +594,7 @@ export default function App() {
               onClick={() => { if (!quizStarted) { setMode('quiz'); } }}
               disabled={quizStarted}
               className={`px-4 py-1.5 rounded text-xs font-semibold font-mono tracking-wider transition-all cursor-pointer
-                ${mode === 'quiz' ? 'bg-amber-700 text-white shadow-sm' : 'text-stone-500 hover:text-stone-800 disabled:opacity-50'}`}
+                ${mode === 'quiz' ? 'bg-amber-700 text-white shadow-sm' : 'text-stone-500 hover:text-stone-850 disabled:opacity-50'}`}
             >
               QUIZ TRAINING
             </button>
@@ -573,9 +602,17 @@ export default function App() {
               onClick={() => { if (!quizStarted) { setMode('water'); setSelectedRegionId(null); } }}
               disabled={quizStarted}
               className={`px-4 py-1.5 rounded text-xs font-semibold font-mono tracking-wider transition-all cursor-pointer
-                ${mode === 'water' ? 'bg-amber-700 text-white shadow-sm' : 'text-stone-500 hover:text-stone-800 disabled:opacity-50'}`}
+                ${mode === 'water' ? 'bg-amber-700 text-white shadow-sm' : 'text-stone-500 hover:text-stone-850 disabled:opacity-50'}`}
             >
               ACQUE D'ITALIA
+            </button>
+            <button 
+              onClick={() => { if (!quizStarted) { setMode('coasts'); setSelectedRegionId(null); } }}
+              disabled={quizStarted}
+              className={`px-4 py-1.5 rounded text-xs font-semibold font-mono tracking-wider transition-all cursor-pointer
+                ${mode === 'coasts' ? 'bg-amber-700 text-white shadow-sm' : 'text-stone-500 hover:text-stone-850 disabled:opacity-50'}`}
+            >
+              COSTE D'ITALIA
             </button>
           </div>
         </div>
@@ -589,14 +626,14 @@ export default function App() {
             className={`flex-1 text-center py-2 rounded-lg text-xs font-bold tracking-wider transition-all cursor-pointer
               ${mode === 'study' ? 'bg-amber-700 text-white font-extrabold shadow-sm' : 'text-stone-500'}`}
           >
-            STUDIA MAPPA
+            STUDIA
           </button>
           <button 
             onClick={() => setMode('quiz')}
             className={`flex-1 text-center py-2 rounded-lg text-xs font-bold tracking-wider transition-all cursor-pointer
               ${mode === 'quiz' ? 'bg-amber-700 text-white font-extrabold shadow-sm' : 'text-stone-500'}`}
           >
-            SFIDA QUIZ
+            QUIZ
           </button>
           <button 
             onClick={() => setMode('water')}
@@ -604,6 +641,13 @@ export default function App() {
               ${mode === 'water' ? 'bg-amber-700 text-white font-extrabold shadow-sm' : 'text-stone-500'}`}
           >
             ACQUE
+          </button>
+          <button 
+            onClick={() => setMode('coasts')}
+            className={`flex-1 text-center py-2 rounded-lg text-xs font-bold tracking-wider transition-all cursor-pointer
+              ${mode === 'coasts' ? 'bg-amber-700 text-white font-extrabold shadow-sm' : 'text-stone-500'}`}
+          >
+            COSTE
           </button>
         </div>
       )}
@@ -889,7 +933,7 @@ export default function App() {
                     </button>
                   </div>
                   
-                  <p className="text-[11px] text-stone-500 mt-1 font-sans hidden md:block">
+                  <p className="text-[11px] text-stone-550 mt-1 font-sans hidden md:block">
                     Le cime montuose alimentano i fiumi e formano i grandi bacini lacustri del nostro Paese.
                   </p>
 
@@ -911,7 +955,7 @@ export default function App() {
                                 {river.length} km
                               </span>
                             </div>
-                            <div className="grid grid-cols-2 gap-1 text-[8px] font-mono text-stone-500">
+                            <div className="grid grid-cols-2 gap-1 text-[8px] font-mono text-stone-505">
                               <div>Sorgente: <strong className="text-stone-700">{river.source}</strong></div>
                               <div>Foce: <strong className="text-stone-700">{river.mouth}</strong></div>
                             </div>
@@ -945,6 +989,103 @@ export default function App() {
                             </div>
                             <p className="text-[9px] text-stone-500 leading-relaxed font-sans pt-1 border-t border-dashed border-stone-200/50 mt-1">
                               {lake.desc}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+
+          {/* COSTE D'ITALIA PANEL */}
+          {mode === 'coasts' && (
+            <div className="glass-panel rounded-2xl p-4 md:p-6 flex flex-col pointer-events-auto transition-all duration-300 shadow-lg md:shadow-sm">
+              {isMinimized ? (
+                <div 
+                  onClick={() => setIsMinimized(false)}
+                  className="flex items-center justify-between cursor-pointer w-full"
+                >
+                  <div className="flex items-center gap-2">
+                    <Waves size={16} className="text-amber-700" />
+                    <span className="text-xs font-bold text-stone-900">
+                      Coste: 7.914 km di sviluppo costiero
+                    </span>
+                  </div>
+                  <ChevronUp size={16} className="text-stone-500" />
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <span className="text-[10px] font-mono text-amber-800 font-extrabold tracking-wider uppercase flex items-center gap-1">
+                        <Waves size={12} /> Sviluppo Costiero
+                      </span>
+                      <h2 className="text-xl md:text-2xl font-black tracking-tight text-stone-900 mt-0.5">Coste d'Italia</h2>
+                    </div>
+                    <button 
+                      onClick={() => setIsMinimized(true)}
+                      className="p-1 hover:bg-stone-100 rounded-full transition-colors cursor-pointer text-stone-500"
+                      title="Riduci pannello"
+                    >
+                      <ChevronDown size={18} />
+                    </button>
+                  </div>
+                  
+                  <p className="text-[11px] text-stone-500 mt-1 font-sans hidden md:block">
+                    L'Italia è circondata da circa 7.914 km di litorale, diviso tra 15 regioni costiere e lambito da 6 mari diversi.
+                  </p>
+
+                  {/* Scrollable container for lists */}
+                  <div className="flex-1 overflow-y-auto space-y-4 max-h-[30vh] md:max-h-[52vh] pr-1 scrollbar-thin mt-3">
+                    {/* Famous Stretches List */}
+                    <div className="space-y-2">
+                      <h3 className="text-[9px] font-mono text-stone-500 uppercase tracking-widest font-black flex items-center gap-1.5">
+                        🌊 Tratti Costieri Celebri
+                      </h3>
+                      <div className="space-y-2">
+                        {COASTS_FAMOUS_DATA.map((coast) => (
+                          <div key={coast.name} className="bg-amber-50/40 border border-amber-900/5 rounded-xl p-2.5 space-y-1 hover:border-amber-700/20 transition-all">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-stone-900">
+                                {coast.name}
+                              </span>
+                              <span className="text-[9px] font-mono font-bold text-amber-800 bg-amber-100/60 px-2 py-0.5 rounded-full">
+                                {coast.length}
+                              </span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-1 text-[8px] font-mono text-stone-500">
+                              <div>Regione: <strong className="text-stone-700">{coast.region}</strong></div>
+                              <div>Tipo: <strong className="text-stone-700">{coast.type}</strong></div>
+                            </div>
+                            <p className="text-[9px] text-stone-500 leading-relaxed font-sans pt-1 border-t border-dashed border-stone-200/50 mt-1">
+                              {coast.desc}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Regions Coastline Development List */}
+                    <div className="space-y-2 pt-1">
+                      <h3 className="text-[9px] font-mono text-stone-500 uppercase tracking-widest font-black flex items-center gap-1.5">
+                        📍 Lunghezza Coste per Regione
+                      </h3>
+                      <div className="space-y-1.5">
+                        {COASTS_REGIONS_DATA.map((reg, idx) => (
+                          <div key={reg.name} className="bg-stone-50 border border-stone-200/60 rounded-xl p-2.5 space-y-1 hover:border-amber-700/20 transition-all">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-stone-900">
+                                {idx + 1}. {reg.name}
+                              </span>
+                              <span className="text-[9px] font-mono font-bold text-stone-500 bg-stone-150 px-2 py-0.5 rounded-full">
+                                {reg.length} km
+                              </span>
+                            </div>
+                            <p className="text-[9px] text-stone-500 leading-relaxed font-sans mt-0.5">
+                              {reg.desc}
                             </p>
                           </div>
                         ))}
