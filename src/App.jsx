@@ -148,20 +148,144 @@ const PEAKS_DATA = {
 };
 
 const RIVERS_DATA = [
-  { name: "Po", length: 652, source: "Pian del Re (Monviso)", mouth: "Mar Adriatico (Delta)", desc: "Il fiume più lungo d'Italia, attraversa tutta la Pianura Padana prima di sfociare in un imponente delta nel Mar Adriatico." },
-  { name: "Adige", length: 410, source: "Passo Resia (Alpi Retiche)", mouth: "Mar Adriatico", desc: "Il secondo fiume italiano per lunghezza. Nasce vicino al confine con l'Austria e attraversa l'Alto Adige, il Trentino e il Veneto." },
-  { name: "Tevere", length: 405, source: "Monte Fumaiolo (Appennino)", mouth: "Mar Tirreno (Ostia)", desc: "Terzo fiume per lunghezza. Storico corso d'acqua di Roma, attraversa l'Appennino scorrendo attraverso Umbria e Lazio." },
-  { name: "Adda", length: 313, source: "Alpi Retiche (Bormio)", mouth: "Fiume Po (tributario)", desc: "Il più lungo affluente del Po, attraversa la Valtellina ed entra nel Lago di Como prima di confluire nel Po nel cremonese." },
-  { name: "Oglio", length: 280, source: "Corno dei Tre Signori (Alpi)", mouth: "Fiume Po (tributario)", desc: "Importante affluente di sinistra del Po, scorre attraverso la Val Camonica, forma il Lago d'Iseo e attraversa la pianura lombarda." }
+  { 
+    id: "po",
+    name: "Po", 
+    length: 652, 
+    source: "Pian del Re (Monviso)", 
+    mouth: "Mar Adriatico (Delta)", 
+    regions: ["piemonte", "lombardia", "emilia", "veneto"],
+    path: "M 60,125 C 90,120 110,135 150,132 C 180,130 200,150 230,152 C 260,154 290,165 315,160 C 322,159 328,155 330,155",
+    desc: "Il fiume più lungo d'Italia, attraversa tutta la Pianura Padana prima di sfociare in un imponente delta nel Mar Adriatico." 
+  },
+  { 
+    id: "adige",
+    name: "Adige", 
+    length: 410, 
+    source: "Passo Resia (Alpi Retiche)", 
+    mouth: "Mar Adriatico", 
+    regions: ["trentino", "veneto"],
+    path: "M 185,55 C 190,65 192,80 200,82 C 210,84 218,78 225,82 C 232,86 235,90 238,98",
+    desc: "Il secondo fiume italiano per lunghezza. Nasce vicino al confine con l'Austria e attraversa l'Alto Adige, il Trentino e il Veneto." 
+  },
+  { 
+    id: "tevere",
+    name: "Tevere", 
+    length: 405, 
+    source: "Monte Fumaiolo (Appennino)", 
+    mouth: "Mar Tirreno (Ostia)", 
+    regions: ["emilia", "toscana", "umbria", "lazio"],
+    path: "M 285,248 C 280,260 270,270 278,285 C 285,295 285,310 275,325 C 270,332 268,340 262,345",
+    desc: "Terzo fiume per lunghezza. Storico corso d'acqua di Roma, attraversa l'Appennino scorrendo attraverso Umbria e Lazio." 
+  },
+  { 
+    id: "adda",
+    name: "Adda", 
+    length: 313, 
+    source: "Alpi Retiche (Bormio)", 
+    mouth: "Fiume Po (tributario)", 
+    regions: ["lombardia"],
+    path: "M 180,55 C 165,65 155,72 153,78 C 150,95 165,120 178,135 C 188,145 192,148 195,150",
+    desc: "Il più lungo affluente del Po, attraversa la Valtellina ed entra nel Lago di Como prima di confluire nel Po nel cremonese." 
+  },
+  { 
+    id: "oglio",
+    name: "Oglio", 
+    length: 280, 
+    source: "Corno dei Tre Signori (Alpi)", 
+    mouth: "Fiume Po (tributario)", 
+    regions: ["lombardia"],
+    path: "M 172,62 C 174,75 168,90 172,98 C 176,106 182,118 185,124 C 188,130 195,140 210,150",
+    desc: "Importante affluente di sinistra del Po, scorre attraverso la Val Camonica, forma il Lago d'Iseo e attraversa la pianura lombarda." 
+  }
 ];
 
 const LAKES_DATA = [
-  { name: "Lago di Garda (Benaco)", area: 370, depth: 346, regions: "Lombardia, Veneto, Trentino-A.A.", desc: "Il più grande lago d'Italia. Cerniera tra tre regioni, è un lago glaciale noto per il suo clima mite e i paesaggi mediterranei." },
-  { name: "Lago Maggiore (Verbano)", area: 212, depth: 372, regions: "Piemonte, Lombardia (e Svizzera)", desc: "Secondo lago italiano per superficie, le sue sponde ospitano splendide isole barocche (Isole Borromee) e giardini botanici." },
-  { name: "Lago di Como (Lario)", area: 146, depth: 410, regions: "Lombardia", desc: "Famoso per la sua caratteristica forma a 'Y' rovesciata. È il lago più profondo d'Italia (410m) e uno dei più profondi d'Europa." },
-  { name: "Lago Trasimeno", area: 128, depth: 6, regions: "Umbria", desc: "Il lago più grande dell'Italia peninsulare. Molto esteso ma estremamente poco profondo (massimo 6 metri), situato tra colline toscane e umbre." },
-  { name: "Lago di Bolsena", area: 113.5, depth: 151, regions: "Lazio", desc: "Il lago vulcanico più grande d'Europa. Si è formato nella caldera spenta dei monti Volsini ed è famoso per la limpidezza delle sue acque." }
+  { 
+    id: "garda",
+    name: "Lago di Garda (Benaco)", 
+    area: 370, 
+    depth: 346, 
+    regions: "Lombardia, Veneto, Trentino-A.A.", 
+    regionsList: ["lombardia", "veneto", "trentino"],
+    cx: 198, 
+    cy: 88, 
+    rx: 5.5, 
+    ry: 9.5, 
+    rotate: -12,
+    desc: "Il più grande lago d'Italia. Cerniera tra tre regioni, è un lago glaciale noto per il suo clima mite e i paesaggi mediterranei." 
+  },
+  { 
+    id: "maggiore",
+    name: "Lago Maggiore (Verbano)", 
+    area: 212, 
+    depth: 372, 
+    regions: "Piemonte, Lombardia (e Svizzera)", 
+    regionsList: ["piemonte", "lombardia"],
+    cx: 132, 
+    cy: 74, 
+    rx: 4, 
+    ry: 11, 
+    rotate: -20,
+    desc: "Secondo lago italiano per superficie, le sue sponde ospitano splendide isole barocche (Isole Borromee) e giardini botanici." 
+  },
+  { 
+    id: "como",
+    name: "Lago di Como (Lario)", 
+    area: 146, 
+    depth: 410, 
+    regions: "Lombardia", 
+    regionsList: ["lombardia"],
+    cx: 148, 
+    cy: 78, 
+    rx: 3.5, 
+    ry: 8, 
+    rotate: -35,
+    desc: "Famoso per la sua caratteristica forma a 'Y' rovesciata. È il lago più profondo d'Italia (410m) e uno dei più profondi d'Europa." 
+  },
+  { 
+    id: "trasimeno",
+    name: "Lago Trasimeno", 
+    area: 128, 
+    depth: 6, 
+    regions: "Umbria", 
+    regionsList: ["umbria"],
+    cx: 268, 
+    cy: 282, 
+    rx: 5.5, 
+    ry: 4, 
+    rotate: 5,
+    desc: "Il lago più grande dell'Italia peninsulare. Molto esteso ma estremamente poco profondo (massimo 6 metri), situato tra colline toscane e umbre." 
+  },
+  { 
+    id: "bolsena",
+    name: "Lago di Bolsena", 
+    area: 113.5, 
+    depth: 151, 
+    regions: "Lazio", 
+    regionsList: ["lazio"],
+    cx: 258, 
+    cy: 320, 
+    rx: 4.5, 
+    ry: 4, 
+    rotate: 0,
+    desc: "Il lago vulcanico più grande d'Europa. Si è formato nella caldera spenta dei monti Volsini ed è famoso per la limpidezza delle sue acque." 
+  }
 ];
+
+const WATER_LABEL_COORDINATES = {
+  po: { name: "Fiume Po", value: "652 km", x: 180, y: 125 },
+  adige: { name: "Fiume Adige", value: "410 km", x: 235, y: 95 },
+  tevere: { name: "Fiume Tevere", value: "405 km", x: 285, y: 300 },
+  adda: { name: "Fiume Adda", value: "313 km", x: 155, y: 105 },
+  oglio: { name: "Fiume Oglio", value: "280 km", x: 195, y: 115 },
+  garda: { name: "Lago di Garda", value: "370 km²", x: 198, y: 72 },
+  maggiore: { name: "Lago Maggiore", value: "212 km²", x: 132, y: 58 },
+  como: { name: "Lago di Como", value: "146 km²", x: 148, y: 62 },
+  trasimeno: { name: "Lago Trasimeno", value: "128 km²", x: 268, y: 266 },
+  bolsena: { name: "Lago di Bolsena", value: "113.5 km²", x: 258, y: 304 }
+};
+
 
 const COASTS_REGIONS_DATA = [
   { id: "sardegna", name: "Sardegna", length: 1897, desc: "La regione con lo sviluppo costiero più esteso d'Italia. Spazia da baie sabbiose cristalline (Costa Smeralda) a falesie a picco sul mare." },
