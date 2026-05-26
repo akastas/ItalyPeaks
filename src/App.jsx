@@ -261,11 +261,15 @@ export default function App() {
   // Top 5 Coast Overlay State
   const [showTop5Coasts, setShowTop5Coasts] = useState(false);
 
+  // Selected River/Lake State
+  const [selectedWaterId, setSelectedWaterId] = useState(null);
+
   // Auto-maximize and state reset on mode changes
   useEffect(() => {
     setIsMinimized(false);
     setShowTop5Coasts(mode === 'coasts');
     setSelectedRegionId(null);
+    setSelectedWaterId(null);
   }, [mode]);
 
   // Quiz State
@@ -463,6 +467,20 @@ export default function App() {
     return `hsl(${h}, ${s}%, ${l}%)`;
   };
 
+  const getWaterRegionColor = (regionId) => {
+    if (selectedWaterId) {
+      const selectedRiver = RIVERS_DATA.find(r => r.id === selectedWaterId);
+      const selectedLake = LAKES_DATA.find(l => l.id === selectedWaterId);
+      const activeRegions = selectedRiver ? selectedRiver.regions : (selectedLake ? selectedLake.regionsList : []);
+      if (activeRegions.includes(regionId)) {
+        return '#bae6fd'; // highlighted sky-200
+      }
+      return '#f4eee2'; // dimmed
+    }
+    const containsWater = RIVERS_DATA.some(r => r.regions.includes(regionId)) || LAKES_DATA.some(l => l.regionsList.includes(regionId));
+    return containsWater ? '#e0f2fe' : '#f5f5f4'; // light sky-100 or soft gray
+  };
+
   const handleRegionClick = (id) => {
     setIsMinimized(false);
     if (mode === 'study') {
@@ -545,6 +563,8 @@ export default function App() {
         return { fill: isTop5 ? getCoastRegionColor(regionId) : '#f4eee2' };
       }
       return { fill: getCoastRegionColor(regionId) };
+    } else if (mode === 'water') {
+      return { fill: getWaterRegionColor(regionId) };
     } else if (mode === 'quiz' && quizStarted && !quizFinished) {
       const correctAnswerId = questions[currentQuestionIndex];
 
@@ -587,6 +607,26 @@ export default function App() {
       }
 
       if (!isCoastal) {
+        return "region-path transition-all duration-300 stroke-[1px] stroke-stone-200 outline-none opacity-40 ";
+      }
+      return "region-path transition-all duration-300 cursor-pointer outline-none " + strokeClass;
+    }
+
+    if (mode === 'water') {
+      const selectedRiver = RIVERS_DATA.find(r => r.id === selectedWaterId);
+      const selectedLake = LAKES_DATA.find(l => l.id === selectedWaterId);
+      const activeRegions = selectedRiver ? selectedRiver.regions : (selectedLake ? selectedLake.regionsList : []);
+      const containsWater = RIVERS_DATA.some(r => r.regions.includes(regionId)) || LAKES_DATA.some(l => l.regionsList.includes(regionId));
+      
+      let strokeClass = "stroke-stone-300 ";
+      if (selectedWaterId) {
+        if (activeRegions.includes(regionId)) {
+          strokeClass = "stroke-sky-500 stroke-[1.5px] ";
+        } else {
+          return "region-path transition-all duration-300 stroke-[1px] stroke-stone-200 outline-none opacity-40 ";
+        }
+      }
+      if (!containsWater) {
         return "region-path transition-all duration-300 stroke-[1px] stroke-stone-200 outline-none opacity-40 ";
       }
       return "region-path transition-all duration-300 cursor-pointer outline-none " + strokeClass;
@@ -758,6 +798,21 @@ export default function App() {
                   <span className="text-[8px] font-mono text-stone-400">1.9k</span>
                 </div>
               </div>
+            ) : mode === 'water' ? (
+              <div className="bg-white/90 backdrop-blur border border-stone-200 p-2 rounded-lg shadow-sm flex flex-col gap-1 w-fit">
+                <div className="text-[8px] font-mono text-stone-550 uppercase tracking-wider font-bold">Legenda Acque</div>
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-1.5 text-[8px] font-sans text-stone-600">
+                    <span className="w-3.5 h-0.5 bg-[#0ea5e9] rounded" /> Fiumi
+                  </div>
+                  <div className="flex items-center gap-1.5 text-[8px] font-sans text-stone-600">
+                    <span className="w-2 h-2 bg-[#38bdf8] border border-[#0284c7] rounded-full" /> Laghi
+                  </div>
+                  <div className="flex items-center gap-1.5 text-[8px] font-sans text-stone-600">
+                    <span className="w-2.5 h-1.5 bg-[#e0f2fe] border border-stone-200/50 rounded" /> Regioni con acque
+                  </div>
+                </div>
+              </div>
             ) : (
               <>
                 {/* Elevation Toggle */}
@@ -870,6 +925,100 @@ export default function App() {
                     </g>
                   ))
                 )}
+
+                {/* Rivers and Lakes overlays */}
+                {mode === 'water' && (
+                  <>
+                    {/* Rivers */}
+                    {RIVERS_DATA.map((river) => {
+                      const isSelected = selectedWaterId === river.id;
+                      const isAnySelected = selectedWaterId !== null;
+                      return (
+                        <path
+                          key={river.id}
+                          d={river.path}
+                          fill="none"
+                          stroke={isSelected ? "#0284c7" : "#0ea5e9"}
+                          strokeWidth={isSelected ? 3.5 : 1.8}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className={`transition-all duration-300 cursor-pointer hover:stroke-sky-600 pointer-events-auto ${isSelected ? 'animate-river-flow' : ''}`}
+                          opacity={isAnySelected ? (isSelected ? 1 : 0.2) : 0.75}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedWaterId(river.id);
+                            setIsMinimized(false);
+                          }}
+                        />
+                      );
+                    })}
+
+                    {/* Lakes */}
+                    {LAKES_DATA.map((lake) => {
+                      const isSelected = selectedWaterId === lake.id;
+                      const isAnySelected = selectedWaterId !== null;
+                      return (
+                        <ellipse
+                          key={lake.id}
+                          cx={lake.cx}
+                          cy={lake.cy}
+                          rx={lake.rx}
+                          ry={lake.ry}
+                          transform={`rotate(${lake.rotate} ${lake.cx} ${lake.cy})`}
+                          fill={isSelected ? "#0284c7" : "#38bdf8"}
+                          stroke="#0284c7"
+                          strokeWidth={0.8}
+                          className={`transition-all duration-300 cursor-pointer hover:fill-sky-600 pointer-events-auto ${isSelected ? 'animate-lake-pulse' : ''}`}
+                          opacity={isAnySelected ? (isSelected ? 1 : 0.2) : 0.8}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedWaterId(lake.id);
+                            setIsMinimized(false);
+                          }}
+                        />
+                      );
+                    })}
+
+                    {/* Selected Water Label Overlay */}
+                    {selectedWaterId && WATER_LABEL_COORDINATES[selectedWaterId] && (() => {
+                      const label = WATER_LABEL_COORDINATES[selectedWaterId];
+                      return (
+                        <g 
+                          transform={`translate(${label.x}, ${label.y})`}
+                          className="cursor-pointer select-none opacity-95 hover:opacity-100 transition-opacity pointer-events-auto"
+                        >
+                          <rect
+                            x="-50"
+                            y="-18"
+                            width="100"
+                            height="30"
+                            rx="5"
+                            fill="#fcfbf8"
+                            stroke="#0284c7"
+                            strokeWidth="1.2"
+                            className="shadow-sm"
+                          />
+                          <text
+                            x="0"
+                            y="-6"
+                            textAnchor="middle"
+                            className="font-bold text-[8px] fill-stone-900 font-sans"
+                          >
+                            {label.name}
+                          </text>
+                          <text
+                            x="0"
+                            y="6"
+                            textAnchor="middle"
+                            className="font-mono text-[7px] fill-sky-800 font-extrabold"
+                          >
+                            {label.value}
+                          </text>
+                        </g>
+                      );
+                    })()}
+                  </>
+                )}
               </g>
             </svg>
           </div>
@@ -896,6 +1045,28 @@ export default function App() {
                       }}
                     />
                     <span className="text-[9px] font-mono text-stone-400">1.897 km</span>
+                  </div>
+                </div>
+              </>
+            ) : mode === 'water' ? (
+              <>
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="bg-white/80 backdrop-blur border border-stone-200 px-3 py-1.5 rounded-lg text-[10px] font-mono text-stone-600 flex items-center gap-1.5 shadow-sm">
+                    <Waves size={11} className="text-sky-600" /> IDROGRAFIA ITALIANA
+                  </div>
+                  <div className="bg-white/80 backdrop-blur border border-stone-200 px-3 py-1.5 rounded-lg text-[10px] font-mono text-stone-600 flex items-center gap-1.5 shadow-sm">
+                    <div className="w-3.5 h-2 bg-[#e0f2fe] border border-stone-200 rounded-sm" />
+                    <span>Regioni con acque</span>
+                  </div>
+                </div>
+
+                {/* Water Elements Legend */}
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2 text-[10px] font-sans text-stone-750 font-bold">
+                    <span className="w-5 h-0.5 bg-[#0ea5e9] rounded" /> Fiumi (Top 5)
+                  </div>
+                  <div className="flex items-center gap-2 text-[10px] font-sans text-stone-755 font-bold">
+                    <span className="w-3 h-3 bg-[#38bdf8] border border-[#0284c7] rounded-full inline-block animate-pulse" /> Laghi (Top 5)
                   </div>
                 </div>
               </>
@@ -1006,9 +1177,15 @@ export default function App() {
                               <span className="text-[9px] font-mono text-stone-500 uppercase tracking-wider">Massiccio</span>
                               <div className="text-xs font-bold text-stone-855 truncate">{selectedRegion.massif}</div>
                             </div>
-                            <div className="bg-stone-50 border border-stone-200/60 rounded-xl p-3 space-y-0.5">
+                            <div className="bg-stone-50 border border-stone-200/60 rounded-xl p-3 space-y-1">
                               <span className="text-[9px] font-mono text-stone-500 uppercase tracking-wider">Altezza</span>
                               <div className="text-sm md:text-base font-extrabold font-mono text-amber-800">{selectedRegion.height.toLocaleString()} m</div>
+                              <div className="w-full bg-stone-200 h-1 rounded-full overflow-hidden">
+                                <div 
+                                  className="bg-amber-600 h-full rounded-full transition-all duration-550" 
+                                  style={{ width: `${(selectedRegion.height / 4810) * 100}%` }}
+                                />
+                              </div>
                             </div>
                           </div>
 
@@ -1048,7 +1225,7 @@ export default function App() {
 
           {/* WATER MODE PANEL (Rivers & Lakes) */}
           {mode === 'water' && (
-            <div className="glass-panel rounded-2xl p-4 md:p-6 flex flex-col pointer-events-auto transition-all duration-300 shadow-lg md:shadow-sm">
+            <div className="glass-panel rounded-2xl p-4 md:p-6 flex flex-col justify-between pointer-events-auto transition-all duration-300 shadow-lg md:shadow-sm">
               {isMinimized ? (
                 <div 
                   onClick={() => setIsMinimized(false)}
@@ -1057,14 +1234,16 @@ export default function App() {
                   <div className="flex items-center gap-2">
                     <Waves size={16} className="text-amber-700" />
                     <span className="text-xs font-bold text-stone-900">
-                      Acque d'Italia: 5 Fiumi e 5 Laghi
+                      {selectedWaterId 
+                        ? `Acque: ${RIVERS_DATA.find(r => r.id === selectedWaterId)?.name || LAKES_DATA.find(l => l.id === selectedWaterId)?.name}` 
+                        : "Acque d'Italia: 5 Fiumi e 5 Laghi"}
                     </span>
                   </div>
                   <ChevronUp size={16} className="text-stone-500" />
                 </div>
               ) : (
                 <>
-                  <div className="flex items-start justify-between">
+                  <div className="flex items-start justify-between border-b border-stone-100 pb-2 mb-3">
                     <div>
                       <span className="text-[10px] font-mono text-amber-800 font-extrabold tracking-wider uppercase flex items-center gap-1">
                         <Waves size={12} /> Idrografia Italiana
@@ -1079,69 +1258,163 @@ export default function App() {
                       <ChevronDown size={18} />
                     </button>
                   </div>
-                  
-                  <p className="text-[11px] text-stone-550 mt-1 font-sans hidden md:block">
-                    Le cime montuose alimentano i fiumi e formano i grandi bacini lacustri del nostro Paese.
-                  </p>
 
-                  {/* Scrollable container for lists */}
-                  <div className="flex-1 overflow-y-auto space-y-4 max-h-[30vh] md:max-h-[52vh] pr-1 scrollbar-thin mt-3">
-                    {/* Rivers List */}
-                    <div className="space-y-2">
-                      <h3 className="text-[9px] font-mono text-stone-500 uppercase tracking-widest font-black flex items-center gap-1.5">
-                        🌊 I 5 Fiumi più Lunghi
-                      </h3>
-                      <div className="space-y-2">
-                        {RIVERS_DATA.map((river, idx) => (
-                          <div key={river.name} className="bg-amber-50/40 border border-amber-900/5 rounded-xl p-2.5 space-y-1 hover:border-amber-700/20 transition-all">
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs font-bold text-stone-900">
-                                {idx + 1}. {river.name}
-                              </span>
-                              <span className="text-[9px] font-mono font-bold text-amber-800 bg-amber-100/60 px-2 py-0.5 rounded-full">
-                                {river.length} km
-                              </span>
-                            </div>
-                            <div className="grid grid-cols-2 gap-1 text-[8px] font-mono text-stone-505">
-                              <div>Sorgente: <strong className="text-stone-700">{river.source}</strong></div>
-                              <div>Foce: <strong className="text-stone-700">{river.mouth}</strong></div>
-                            </div>
-                            <p className="text-[9px] text-stone-500 leading-relaxed font-sans pt-1 border-t border-dashed border-stone-200/50 mt-1">
-                              {river.desc}
-                            </p>
+                  <AnimatePresence mode="wait">
+                    {selectedWaterId ? (() => {
+                      const river = RIVERS_DATA.find(r => r.id === selectedWaterId);
+                      const lake = LAKES_DATA.find(l => l.id === selectedWaterId);
+                      const water = river || lake;
+                      const isRiver = !!river;
+                      return (
+                        <motion.div
+                          key={selectedWaterId}
+                          initial={{ opacity: 0, y: 15 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -15 }}
+                          className="space-y-4 flex-1 overflow-y-auto"
+                        >
+                          <div>
+                            <span className="text-[10px] font-mono text-sky-850 font-extrabold tracking-wider uppercase">
+                              {isRiver ? "Fiume d'Italia" : "Lago d'Italia"}
+                            </span>
+                            <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-stone-900 mt-0.5">{water.name}</h2>
                           </div>
-                        ))}
-                      </div>
-                    </div>
 
-                    {/* Lakes List */}
-                    <div className="space-y-2 pt-1">
-                      <h3 className="text-[9px] font-mono text-stone-500 uppercase tracking-widest font-black flex items-center gap-1.5">
-                        💧 I 5 Laghi Naturali più Grandi
-                      </h3>
-                      <div className="space-y-2">
-                        {LAKES_DATA.map((lake, idx) => (
-                          <div key={lake.name} className="bg-stone-50 border border-stone-200/60 rounded-xl p-2.5 space-y-1 hover:border-amber-700/20 transition-all">
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs font-bold text-stone-900">
-                                {idx + 1}. {lake.name}
+                          <div className="space-y-3">
+                            {/* Primary stat */}
+                            <div className="bg-sky-50/50 border border-sky-900/5 rounded-xl p-3 space-y-1.5">
+                              <span className="text-[9px] font-mono text-sky-850 uppercase tracking-widest flex items-center gap-1.5">
+                                <Waves size={11} className="text-sky-750" /> {isRiver ? "Lunghezza Corso" : "Superficie Specchio"}
                               </span>
-                              <span className="text-[9px] font-mono font-bold text-amber-800 bg-amber-100/60 px-2 py-0.5 rounded-full">
-                                {lake.area} km²
-                              </span>
+                              <div className="text-lg font-extrabold text-sky-950">
+                                {isRiver ? `${river.length} km` : `${lake.area} km²`}
+                              </div>
+                              <div className="w-full bg-stone-200/60 h-1.5 rounded-full overflow-hidden">
+                                <div 
+                                  className="bg-sky-600 h-full rounded-full transition-all duration-550" 
+                                  style={{ width: isRiver ? `${(river.length / 652) * 100}%` : `${(lake.area / 370) * 100}%` }}
+                                />
+                              </div>
                             </div>
-                            <div className="grid grid-cols-2 gap-1 text-[8px] font-mono text-stone-500">
-                              <div>Regioni: <strong className="text-stone-750 truncate block max-w-[125px]">{lake.regions}</strong></div>
-                              <div>Profondità: <strong className="text-stone-700">{lake.depth} m (max)</strong></div>
+
+                            {/* Secondary stats */}
+                            <div className="grid grid-cols-2 gap-2">
+                              {isRiver ? (
+                                <>
+                                  <div className="bg-stone-50 border border-stone-200/60 rounded-xl p-2.5 space-y-0.5">
+                                    <span className="text-[9px] font-mono text-stone-500 uppercase tracking-wider">Sorgente</span>
+                                    <div className="text-[10px] font-bold text-stone-850 truncate" title={river.source}>{river.source}</div>
+                                  </div>
+                                  <div className="bg-stone-50 border border-stone-200/60 rounded-xl p-2.5 space-y-0.5">
+                                    <span className="text-[9px] font-mono text-stone-500 uppercase tracking-wider">Foce</span>
+                                    <div className="text-[10px] font-bold text-stone-850 truncate" title={river.mouth}>{river.mouth}</div>
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  <div className="bg-stone-50 border border-stone-200/60 rounded-xl p-2.5 space-y-0.5">
+                                    <span className="text-[9px] font-mono text-stone-500 uppercase tracking-wider">Regioni</span>
+                                    <div className="text-[10px] font-bold text-stone-850 truncate" title={lake.regions}>{lake.regions}</div>
+                                  </div>
+                                  <div className="bg-stone-50 border border-stone-200/60 rounded-xl p-2.5 space-y-0.5">
+                                    <span className="text-[9px] font-mono text-stone-500 uppercase tracking-wider">Profondità</span>
+                                    <div className="text-[10px] font-bold text-stone-850 font-mono">{lake.depth} m (max)</div>
+                                  </div>
+                                </>
+                              )}
                             </div>
-                            <p className="text-[9px] text-stone-500 leading-relaxed font-sans pt-1 border-t border-dashed border-stone-200/50 mt-1">
-                              {lake.desc}
-                            </p>
+
+                            {/* Description */}
+                            <div className="bg-stone-50/40 border border-stone-200/40 rounded-xl p-3 text-xs font-sans text-stone-600 leading-relaxed max-h-[12vh] md:max-h-none overflow-y-auto">
+                              {water.desc}
+                            </div>
                           </div>
-                        ))}
+                        </motion.div>
+                      );
+                    })() : (
+                      <div className="space-y-4 flex-1 flex flex-col min-h-0">
+                        <p className="text-[11px] text-stone-550 font-sans hidden md:block">
+                          Le cime montuose alimentano i fiumi e formano i grandi bacini lacustri del nostro Paese.
+                        </p>
+
+                        {/* Scrollable container for lists */}
+                        <div className="flex-1 overflow-y-auto space-y-4 max-h-[25vh] md:max-h-[48vh] pr-1 scrollbar-thin">
+                          {/* Rivers List */}
+                          <div className="space-y-2">
+                            <h3 className="text-[9px] font-mono text-stone-500 uppercase tracking-widest font-black flex items-center gap-1.5">
+                              🌊 I 5 Fiumi più Lunghi
+                            </h3>
+                            <div className="space-y-2">
+                              {RIVERS_DATA.map((river, idx) => (
+                                <div 
+                                  key={river.name} 
+                                  onClick={() => setSelectedWaterId(river.id)}
+                                  className="bg-amber-50/40 border border-amber-900/5 rounded-xl p-2.5 space-y-1 hover:border-sky-600/35 transition-all cursor-pointer"
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-xs font-bold text-stone-900">
+                                      {idx + 1}. {river.name}
+                                    </span>
+                                    <span className="text-[9px] font-mono font-bold text-amber-800 bg-amber-100/60 px-2 py-0.5 rounded-full">
+                                      {river.length} km
+                                    </span>
+                                  </div>
+                                  <div className="grid grid-cols-2 gap-1 text-[8px] font-mono text-stone-500">
+                                    <div>Sorgente: <strong className="text-stone-700">{river.source}</strong></div>
+                                    <div>Foce: <strong className="text-stone-700">{river.mouth}</strong></div>
+                                  </div>
+                                  <p className="text-[9px] text-stone-550 leading-relaxed font-sans pt-1 border-t border-dashed border-stone-200/50 mt-1">
+                                    {river.desc}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Lakes List */}
+                          <div className="space-y-2 pt-1">
+                            <h3 className="text-[9px] font-mono text-stone-500 uppercase tracking-widest font-black flex items-center gap-1.5">
+                              💧 I 5 Laghi Naturali più Grandi
+                            </h3>
+                            <div className="space-y-2">
+                              {LAKES_DATA.map((lake, idx) => (
+                                <div 
+                                  key={lake.name} 
+                                  onClick={() => setSelectedWaterId(lake.id)}
+                                  className="bg-stone-50 border border-stone-200/60 rounded-xl p-2.5 space-y-1 hover:border-sky-600/35 transition-all cursor-pointer"
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-xs font-bold text-stone-900">
+                                      {idx + 1}. {lake.name}
+                                    </span>
+                                    <span className="text-[9px] font-mono font-bold text-amber-800 bg-amber-100/60 px-2 py-0.5 rounded-full">
+                                      {lake.area} km²
+                                    </span>
+                                  </div>
+                                  <div className="grid grid-cols-2 gap-1 text-[8px] font-mono text-stone-500">
+                                    <div>Regioni: <strong className="text-stone-750 truncate block max-w-[125px]">{lake.regions}</strong></div>
+                                    <div>Profondità: <strong className="text-stone-700">{lake.depth} m (max)</strong></div>
+                                  </div>
+                                  <p className="text-[9px] text-stone-550 leading-relaxed font-sans pt-1 border-t border-dashed border-stone-200/50 mt-1">
+                                    {lake.desc}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
+                    )}
+                  </AnimatePresence>
+
+                  {selectedWaterId && (
+                    <button
+                      onClick={() => setSelectedWaterId(null)}
+                      className="w-full mt-4 py-2 bg-stone-100 border border-stone-200 rounded-xl text-xs font-mono text-stone-500 hover:text-stone-850 hover:border-stone-300 transition-all cursor-pointer pointer-events-auto"
+                    >
+                      Rilascia Selezione
+                    </button>
+                  )}
                 </>
               )}
             </div>
@@ -1202,11 +1475,17 @@ export default function App() {
 
                         <div className="space-y-3">
                           {/* Length Card */}
-                          <div className="bg-sky-50/50 border border-sky-900/5 rounded-xl p-3 space-y-0.5">
+                          <div className="bg-sky-50/50 border border-sky-900/5 rounded-xl p-3 space-y-1.5">
                             <span className="text-[9px] font-mono text-sky-850 uppercase tracking-widest flex items-center gap-1.5">
                               <Waves size={11} className="text-sky-750" /> Estensione Costa
                             </span>
                             <div className="text-lg font-extrabold text-sky-950">{selectedCoastRegion.length.toLocaleString()} km</div>
+                            <div className="w-full bg-stone-200/60 h-1.5 rounded-full overflow-hidden">
+                              <div 
+                                className="bg-sky-600 h-full rounded-full transition-all duration-550" 
+                                style={{ width: `${(selectedCoastRegion.length / 1897) * 100}%` }}
+                              />
+                            </div>
                           </div>
 
                           {/* Description */}

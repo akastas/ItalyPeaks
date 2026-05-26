@@ -52,3 +52,42 @@ body {
 path.region-path:hover {
   fill: #f3ebd5 !important;
 }
+
+/* Selected River Flow Animation */
+@keyframes river-flow {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-river-flow {
+  stroke-dasharray: 6, 3;
+  animation: river-flow 1.2s linear infinite;
+}
+
+/* Selected Lake Pulse/Ripple Animation */
+@keyframes lake-pulse {
+  0% {
+    fill-opacity: 0.8;
+    stroke-width: 0.8px;
+    filter: drop-shadow(0 0 1px rgba(2, 132, 199, 0.4));
+  }
+  50% {
+    fill-opacity: 0.95;
+    stroke-width: 1.8px;
+    filter: drop-shadow(0 0 3px rgba(2, 132, 199, 0.7));
+  }
+  100% {
+    fill-opacity: 0.8;
+    stroke-width: 0.8px;
+    filter: drop-shadow(0 0 1px rgba(2, 132, 199, 0.4));
+  }
+}
+
+.animate-lake-pulse {
+  animation: lake-pulse 2s ease-in-out infinite;
+}
+
