@@ -155,7 +155,7 @@ const RIVERS_DATA = [
     source: "Pian del Re (Monviso)", 
     mouth: "Mar Adriatico (Delta)", 
     regions: ["piemonte", "lombardia", "emilia", "veneto"],
-    path: "M 60,125 C 90,120 110,135 150,132 C 180,130 200,150 230,152 C 260,154 290,165 315,160 C 322,159 328,155 330,155",
+    path: "M 18,130 C 32,128 46,126 60,125 C 90,120 110,135 150,132 C 180,130 200,150 230,152 C 260,154 290,165 315,160 C 322,159 328,155 330,155",
     desc: "Il fiume più lungo d'Italia, attraversa tutta la Pianura Padana prima di sfociare in un imponente delta nel Mar Adriatico." 
   },
   { 
