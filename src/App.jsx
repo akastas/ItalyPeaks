@@ -1582,87 +1582,7 @@ export default function App() {
                   </>
                 )}
 
-                {/* UNESCO sites overlay */}
-                {mode === 'unesco' && (
-                  <>
-                    {UNESCO_DATA.map((site) => {
-                      const isSelected = selectedUnescoId === site.key;
-                      return (
-                        <g
-                          key={site.key}
-                          transform={`translate(${site.x}, ${site.y})`}
-                          className="cursor-pointer pointer-events-auto group"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedUnescoId(site.key);
-                            setIsMinimized(false);
-                            playSynthSound('correct');
-                          }}
-                        >
-                          {/* Outer pulse circle for selected site */}
-                          {isSelected && (
-                            <circle
-                              r="12"
-                              fill="none"
-                              stroke="#d97706"
-                              strokeWidth="1.5"
-                              opacity="0.8"
-                              className="animate-ping"
-                            />
-                          )}
-                          {/* Main pin marker */}
-                          <circle
-                            r={isSelected ? "6" : "4"}
-                            fill={isSelected ? "#d97706" : "#f59e0b"}
-                            stroke={isSelected ? "#fff" : "#b45309"}
-                            strokeWidth={isSelected ? 1.8 : 0.8}
-                            className="transition-all duration-300 shadow-md group-hover:scale-125"
-                          />
-                        </g>
-                      );
-                    })}
 
-                    {/* Selected UNESCO Label Overlay */}
-                    {selectedUnescoId && (() => {
-                      const site = UNESCO_DATA.find(s => s.key === selectedUnescoId);
-                      if (!site) return null;
-                      return (
-                        <g 
-                          transform={`translate(${site.x}, ${site.y - 12})`}
-                          className="cursor-pointer select-none opacity-95 hover:opacity-100 transition-opacity pointer-events-auto"
-                        >
-                          <rect
-                            x="-60"
-                            y="-18"
-                            width="120"
-                            height="28"
-                            rx="5"
-                            fill="#fcfbf8"
-                            stroke="#d97706"
-                            strokeWidth="1.2"
-                            className="shadow-sm"
-                          />
-                          <text
-                            x="0"
-                            y="-6"
-                            textAnchor="middle"
-                            className="font-bold text-[7.5px] fill-stone-900 font-sans"
-                          >
-                            {site.name}
-                          </text>
-                          <text
-                            x="0"
-                            y="5"
-                            textAnchor="middle"
-                            className="font-mono text-[6.5px] fill-amber-700 font-extrabold"
-                          >
-                            UNESCO {site.year}
-                          </text>
-                        </g>
-                      );
-                    })()}
-                  </>
-                )}
               </g>
             </svg>
           </div>
@@ -2304,10 +2224,18 @@ export default function App() {
                           className="space-y-4 flex-1 overflow-y-auto"
                         >
                           <div>
-                            <span className="text-[10px] font-mono text-amber-850 font-extrabold tracking-wider uppercase">
-                              {site.region}
-                            </span>
-                            <h2 className="text-xl md:text-2xl font-extrabold tracking-tight text-stone-900 mt-0.5 font-heading">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-mono text-amber-850 font-extrabold tracking-wider uppercase">
+                                {PEAKS_DATA[site.regionId]?.name || site.regionId}
+                              </span>
+                              <button
+                                onClick={() => setSelectedUnescoId(null)}
+                                className="flex items-center gap-1 text-[9px] font-mono font-bold text-amber-850 hover:text-amber-950 bg-amber-50 hover:bg-amber-100/80 border border-amber-200 px-2 py-0.5 rounded-full transition-all cursor-pointer shadow-sm"
+                              >
+                                <RotateCcw size={10} /> Rilascia Selezione
+                              </button>
+                            </div>
+                            <h2 className="text-xl md:text-2xl font-extrabold tracking-tight text-stone-900 mt-1.5 font-heading">
                               {site.name}
                             </h2>
                             <p className="text-xs italic text-stone-500 font-sans mt-0.5">
@@ -2351,36 +2279,55 @@ export default function App() {
                           L'Italia ospita il maggior numero di patrimoni dell'umanità UNESCO al mondo. Questa mappa evidenzia 30 dei siti culturali e naturali più straordinari della penisola.
                         </p>
 
-                        {/* Scrollable list of UNESCO sites */}
-                        <div className="flex-1 overflow-y-auto space-y-2 max-h-[28vh] md:max-h-[50vh] pr-1 scrollbar-thin">
-                          <div className="space-y-2">
-                            <h3 className="text-[9px] font-mono text-stone-500 uppercase tracking-widest font-black flex items-center gap-1.5">
-                              🏛️ Indice dei Patrimoni UNESCO
-                            </h3>
-                            <div className="space-y-2">
-                              {UNESCO_DATA.map((site) => (
-                                <div 
-                                  key={site.key} 
-                                  onClick={() => {
-                                    setSelectedUnescoId(site.key);
-                                    playSynthSound('correct');
-                                  }}
-                                  className="bg-stone-50 border border-stone-200/60 rounded-xl p-2.5 space-y-1 hover:border-amber-600/35 transition-all cursor-pointer"
-                                >
-                                  <div className="flex items-center justify-between">
-                                    <span className="text-xs font-bold text-stone-900 truncate pr-2">
-                                      {site.name}
-                                    </span>
-                                    <span className="text-[8px] font-mono font-bold text-amber-800 bg-amber-100/60 px-1.5 py-0.5 rounded-full shrink-0">
-                                      {site.year}
-                                    </span>
+                        {/* Chronological Timeline of UNESCO sites */}
+                        <div className="flex-1 overflow-y-auto max-h-[28vh] md:max-h-[50vh] pr-1 scrollbar-thin">
+                          <div className="relative border-l border-amber-300/80 ml-3 pl-5 py-2 space-y-5">
+                            {(() => {
+                              const groupedByYear = UNESCO_DATA.reduce((acc, site) => {
+                                if (!acc[site.year]) acc[site.year] = [];
+                                acc[site.year].push(site);
+                                return acc;
+                              }, {});
+                              const sortedYears = Object.keys(groupedByYear).sort((a, b) => parseInt(a) - parseInt(b));
+
+                              return sortedYears.map((year) => (
+                                <div key={year} className="relative space-y-2">
+                                  {/* Timeline node dot */}
+                                  <div className="absolute -left-[26px] top-1.5 w-3 h-3 rounded-full bg-amber-700 border-2 border-white shadow-sm" />
+                                  
+                                  {/* Year Header */}
+                                  <div className="text-xs font-bold text-amber-850 bg-amber-50 border border-amber-200/60 px-2 py-0.5 rounded-md inline-block font-mono">
+                                    {year}
                                   </div>
-                                  <div className="flex items-center justify-between text-[8px] font-mono text-stone-400">
-                                    <span>Regione: {site.region}</span>
+
+                                  {/* Sites list in this year */}
+                                  <div className="space-y-2">
+                                    {groupedByYear[year].map((site) => (
+                                      <div 
+                                        key={site.key} 
+                                        onClick={() => {
+                                          setSelectedUnescoId(site.key);
+                                          playSynthSound('correct');
+                                        }}
+                                        className="bg-stone-50 border border-stone-200/60 rounded-xl p-2.5 space-y-1 hover:border-amber-600/35 transition-all cursor-pointer shadow-sm hover:shadow"
+                                      >
+                                        <div className="flex items-center justify-between">
+                                          <span className="text-xs font-bold text-stone-900 truncate pr-2">
+                                            {site.name}
+                                          </span>
+                                          <span className="text-[7.5px] font-mono text-stone-500 shrink-0">
+                                            {PEAKS_DATA[site.regionId]?.name || site.regionId}
+                                          </span>
+                                        </div>
+                                        <p className="text-[9px] text-stone-500 leading-relaxed font-sans mt-0.5 line-clamp-2">
+                                          {site.desc}
+                                        </p>
+                                      </div>
+                                    ))}
                                   </div>
                                 </div>
-                              ))}
-                            </div>
+                              ));
+                            })()}
                           </div>
                         </div>
                       </div>
