@@ -325,6 +325,309 @@ const COASTS_TOP5_CENTROIDS = {
 };
 
 // Web Audio API Synthesizer for lightweight retro sounds
+const UNESCO_DATA = [
+  {
+    "key": "rome",
+    "name": "Centro Storico di Roma",
+    "englishName": "Historic Centre of Rome",
+    "regionId": "lazio",
+    "year": 1980,
+    "x": 271,
+    "y": 350,
+    "desc": "Sito che racchiude i monumenti dell'antichità romana come il Colosseo, il Pantheon e il Foro Romano, oltre a splendide basiliche e palazzi rinascimentali."
+  },
+  {
+    "key": "venice",
+    "name": "Venezia e la sua Laguna",
+    "englishName": "Venice and its Lagoon",
+    "regionId": "veneto",
+    "year": 1987,
+    "x": 264,
+    "y": 112,
+    "desc": "Fondata nel V secolo e disposta su 118 isolette, Venezia è un capolavoro architettonico straordinario con monumenti come la Basilica di San Marco e il Palazzo Ducale."
+  },
+  {
+    "key": "florence",
+    "name": "Centro Storico di Firenze",
+    "englishName": "Historic Centre of Florence",
+    "regionId": "toscana",
+    "year": 1982,
+    "x": 219,
+    "y": 224,
+    "desc": "Culla del Rinascimento e dell'umanesimo, ospita capolavori di Giotto, Brunelleschi, Botticelli e Michelangelo, come la Cattedrale di Santa Maria del Fiore e gli Uffizi."
+  },
+  {
+    "key": "pisa",
+    "name": "Piazza del Duomo a Pisa",
+    "englishName": "Piazza del Duomo, Pisa",
+    "regionId": "toscana",
+    "year": 1987,
+    "x": 184,
+    "y": 227,
+    "desc": "Famosa in tutto il mondo per la Torre Pendente, la piazza ospita un complesso monumentale medievale straordinario che include anche il Duomo, il Battistero e il Camposanto."
+  },
+  {
+    "key": "pompei",
+    "name": "Aree Archeologiche di Pompei ed Ercolano",
+    "englishName": "Archaeological Areas of Pompeii and Herculaneum",
+    "regionId": "campania",
+    "year": 1997,
+    "x": 353,
+    "y": 427,
+    "desc": "Le due antiche città romane, sepolte dall'eruzione del Vesuvio nel 79 d.C., offrono un'istantanea unica e straordinariamente intatta della vita quotidiana dell'antichità."
+  },
+  {
+    "key": "costiera_amalfitana",
+    "name": "Costiera Amalfitana",
+    "englishName": "Amalfi Coast",
+    "regionId": "campania",
+    "year": 1997,
+    "x": 358,
+    "y": 433,
+    "desc": "Un esempio eccezionale di paesaggio mediterraneo, con coste rocciose scoscese, borghi storici arrampicati sulla roccia (come Positano ed Amalfi) e terrazzamenti coltivati."
+  },
+  {
+    "key": "dolomiti",
+    "name": "Le Dolomiti",
+    "englishName": "The Dolomites",
+    "regionId": "trentino",
+    "year": 2009,
+    "x": 257,
+    "y": 33,
+    "desc": "Gruppo montuoso delle Alpi orientali celebrato per la bellezza paesaggistica straordinaria, con pareti rocciose verticali, guglie calcaree e una geologia unica al mondo."
+  },
+  {
+    "key": "cinque_terre",
+    "name": "Portovenere, Cinque Terre e Isole",
+    "englishName": "Cinque Terre and Portovenere",
+    "regionId": "liguria",
+    "year": 1997,
+    "x": 156,
+    "y": 201,
+    "desc": "Un'area costiera frastagliata dove l'uomo ha saputo integrarsi perfettamente creando terrazzamenti e borghi colorati a picco sul mare ligure."
+  },
+  {
+    "key": "sassi_di_matera",
+    "name": "I Sassi e il Parco delle Chiese Rupestri di Matera",
+    "englishName": "The Sassi and the Park of the Rupestrian Churches of Matera",
+    "regionId": "basilicata",
+    "year": 1993,
+    "x": 442,
+    "y": 432,
+    "desc": "Un insediamento trogloditico unico al mondo ricavato nelle grotte naturali e nella roccia calcarea, abitato fin dal Paleolitico e perfettamente integrato nell'ecosistema."
+  },
+  {
+    "key": "alberobello",
+    "name": "I Trulli di Alberobello",
+    "englishName": "The Trulli of Alberobello",
+    "regionId": "puglia",
+    "year": 1996,
+    "x": 468,
+    "y": 424,
+    "desc": "Tipiche abitazioni pugliesi in pietra a secco con tetti conici sormontati da pinnacoli decorati, testimonianza unica di una tecnica costruttiva preistorica sopravvissuta."
+  },
+  {
+    "key": "agrigento",
+    "name": "Valle dei Templi di Agrigento",
+    "englishName": "Archaeological Area of Agrigento",
+    "regionId": "sicilia",
+    "year": 1997,
+    "x": 316,
+    "y": 659,
+    "desc": "Una delle più grandi città della Magna Grecia, celebre per la magnifica serie di templi dorici giunti fino a noi in straordinario stato di conservazione."
+  },
+  {
+    "key": "etna",
+    "name": "Monte Etna",
+    "englishName": "Mount Etna",
+    "regionId": "sicilia",
+    "year": 2013,
+    "x": 375,
+    "y": 628,
+    "desc": "Il vulcano attivo più alto d'Europa, un laboratorio naturale a cielo aperto che influenza la vulcanologia, la geofisica e la biogeografia globali."
+  },
+  {
+    "key": "assisi",
+    "name": "Assisi, la Basilica di San Francesco e altri siti francescani",
+    "englishName": "Assisi, the Basilica of San Francesco",
+    "regionId": "umbria",
+    "year": 2000,
+    "x": 276,
+    "y": 271,
+    "desc": "Città medievale legata alla figura di San Francesco, custode della celebre Basilica che ospita capolavori pittorici di Giotto, Cimabue e Simone Martini."
+  },
+  {
+    "key": "siena",
+    "name": "Centro Storico di Siena",
+    "englishName": "Historic Centre of Siena",
+    "regionId": "toscana",
+    "year": 1995,
+    "x": 216,
+    "y": 242,
+    "desc": "Città medievale rimasta splendidamente intatta, strutturata intorno alla celebre Piazza del Campo, celebre nel mondo per il Palio storico."
+  },
+  {
+    "key": "milan",
+    "name": "Chiesa e Convento Domenicano di Santa Maria delle Grazie",
+    "englishName": "Santa Maria delle Grazie & The Last Supper",
+    "regionId": "lombardia",
+    "year": 1980,
+    "x": 133,
+    "y": 110,
+    "desc": "Il complesso ospita nel refettorio il Cenacolo (L'Ultima Cena) dipinto da Leonardo da Vinci, una delle opere d'arte più celebri e rivoluzionarie della storia."
+  },
+  {
+    "key": "verona",
+    "name": "Città di Verona",
+    "englishName": "City of Verona",
+    "regionId": "veneto",
+    "year": 2000,
+    "x": 208,
+    "y": 112,
+    "desc": "Fondata nel I secolo a.C., Verona conserva monumenti romani (come la celebre Arena), medievali e rinascimentali in un tessuto urbano di eccezionale coerenza storica."
+  },
+  {
+    "key": "caserta",
+    "name": "Reggia di Caserta con il Parco e l'Acquedotto Carolino",
+    "englishName": "Royal Palace of Caserta",
+    "regionId": "campania",
+    "year": 1997,
+    "x": 347,
+    "y": 405,
+    "desc": "Progettata da Luigi Vanvitelli a metà del XVIII secolo per i Borbone, è considerata una delle regge più sfarzose d'Europa, unendo architettura barocca e giardini spettacolari."
+  },
+  {
+    "key": "ravenna",
+    "name": "Monumenti Paleocristiani di Ravenna",
+    "englishName": "Early Christian Monuments of Ravenna",
+    "regionId": "emilia",
+    "year": 1996,
+    "x": 258,
+    "y": 180,
+    "desc": "Complesso monumentale del V e VI secolo celebre nel mondo per la straordinaria bellezza dei suoi mosaici bizantini conservati nelle basiliche di San Vitale e Sant'Apollinare."
+  },
+  {
+    "key": "castel_del_monte",
+    "name": "Castel del Monte",
+    "englishName": "Castel del Monte",
+    "regionId": "puglia",
+    "year": 1996,
+    "x": 428,
+    "y": 404,
+    "desc": "Costruito dall'imperatore Federico II nel XIII secolo, il castello ha una pianta ottagonale di perfetta simmetria, fondendo elementi gotici, islamici e dell'antichità classica."
+  },
+  {
+    "key": "san_gimignano",
+    "name": "Centro Storico di San Gimignano",
+    "englishName": "Historic Centre of San Gimignano",
+    "regionId": "toscana",
+    "year": 1990,
+    "x": 210,
+    "y": 244,
+    "desc": "Città medievale celebre per le sue 14 alte torri gentilizie sopravvissute, simbolo di potere delle famiglie mercantili medievali toscane."
+  },
+  {
+    "key": "su_nuraxi",
+    "name": "Su Nuraxi di Barumini",
+    "englishName": "Su Nuraxi di Barumini",
+    "regionId": "sardegna",
+    "year": 1997,
+    "x": 125,
+    "y": 497,
+    "desc": "Il più completo e meglio conservato esempio di nuraghe in Sardegna, una struttura difensiva megalitica dell'età del bronzo unica della civiltà nuragica."
+  },
+  {
+    "key": "siracusa",
+    "name": "Siracusa e la Necropoli Rupestre di Pantalica",
+    "englishName": "Syracuse and Pantalica",
+    "regionId": "sicilia",
+    "year": 2005,
+    "x": 387,
+    "y": 674,
+    "desc": "Comprende l'isola di Ortigia con resti greci e romani, e la necropoli rupestre di Pantalica contenente oltre 5.000 tombe scavate nella roccia risalenti al XIII secolo a.C."
+  },
+  {
+    "key": "villa_este",
+    "name": "Villa d'Este a Tivoli",
+    "englishName": "Villa d'Este, Tivoli",
+    "regionId": "lazio",
+    "year": 2001,
+    "x": 283,
+    "y": 345,
+    "desc": "Uno dei più straordinari esempi di giardini all'italiana del Rinascimento, famoso nel mondo per il complesso sistema di fontane monumentali, giochi d'acqua e cascate."
+  },
+  {
+    "key": "genoa",
+    "name": "Genova: Le Strade Nuove e il Sistema dei Palazzi dei Rolli",
+    "englishName": "Genoa: Le Strade Nuove & Palazzi dei Rolli",
+    "regionId": "liguria",
+    "year": 2006,
+    "x": 123,
+    "y": 181,
+    "desc": "Un quartiere nobiliare di epoca barocca tardo-rinascimentale con eccezionali palazzi patrizi che ospitavano i visitatori di stato della Repubblica di Genova."
+  },
+  {
+    "key": "urbino",
+    "name": "Centro Storico di Urbino",
+    "englishName": "Historic Centre of Urbino",
+    "regionId": "marche",
+    "year": 1998,
+    "x": 276,
+    "y": 227,
+    "desc": "Città marchigiana che visse una straordinaria fioritura artistica nel XV secolo sotto il duca Federico da Montefeltro, attirando menti come Piero della Francesca e Raffaello."
+  },
+  {
+    "key": "langhe",
+    "name": "Paesaggi Vitivinicoli del Piemonte: Langhe-Roero e Monferrato",
+    "englishName": "Vineyard Landscape of Piedmont",
+    "regionId": "piemonte",
+    "year": 2014,
+    "x": 82,
+    "y": 167,
+    "desc": "Paesaggio collinare eccezionale che testimonia una secolare tradizione di coltivazione della vite per la produzione di vini pregiati come il Barolo e il Barbaresco."
+  },
+  {
+    "key": "val_orcia",
+    "name": "Val d'Orcia",
+    "englishName": "Val d'Orcia",
+    "regionId": "toscana",
+    "year": 2004,
+    "x": 231,
+    "y": 271,
+    "desc": "Celebre paesaggio agricolo toscano progettato nel Rinascimento per riflettere un ideale estetico di buon governo, caratterizzato da dolci colline, cipressi e borghi storici."
+  },
+  {
+    "key": "villa_casale",
+    "name": "Villa Romana del Casale di Piazza Armerina",
+    "englishName": "Villa Romana del Casale",
+    "regionId": "sicilia",
+    "year": 1997,
+    "x": 347,
+    "y": 654,
+    "desc": "Residenza tardo-romana celebre nel mondo per ospitare la più vasta e intatta collezione di mosaici pavimentali romani, raffiguranti scene mitologiche, caccia e vita quotidiana."
+  },
+  {
+    "key": "residenze_sabaude",
+    "name": "Residenze della Casa Reale di Savoia a Torino",
+    "englishName": "Residences of the Royal House of Savoy",
+    "regionId": "piemonte",
+    "year": 1997,
+    "x": 71,
+    "y": 136,
+    "desc": "Un monumentale complesso di palazzi, ville e castelli (come Palazzo Reale e la Reggia di Venaria) edificato nel XVII e XVIII secolo per celebrare il potere dei Savoia."
+  },
+  {
+    "key": "valcamonica",
+    "name": "Incisioni Rupestri della Valcamonica",
+    "englishName": "Rock Drawings in Valcamonica",
+    "regionId": "lombardia",
+    "year": 1979,
+    "x": 179,
+    "y": 77,
+    "desc": "Una delle più grandi collezioni di petroglifi preistorici al mondo, con oltre 140.000 figure scolpite nella roccia nell'arco di 8.000 anni."
+  }
+];
+
 const playSynthSound = (type) => {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -388,12 +691,16 @@ export default function App() {
   // Selected River/Lake State
   const [selectedWaterId, setSelectedWaterId] = useState(null);
 
+  // Selected UNESCO Site State
+  const [selectedUnescoId, setSelectedUnescoId] = useState(null);
+
   // Auto-maximize and state reset on mode changes
   useEffect(() => {
     setIsMinimized(false);
     setShowTop5Coasts(mode === 'coasts');
     setSelectedRegionId(null);
     setSelectedWaterId(null);
+    setSelectedUnescoId(null);
   }, [mode]);
 
   // Quiz State
@@ -786,6 +1093,12 @@ export default function App() {
       return { fill: getCoastRegionColor(regionId) };
     } else if (mode === 'water') {
       return { fill: getWaterRegionColor(regionId) };
+    } else if (mode === 'unesco') {
+      const selectedSite = UNESCO_DATA.find(s => s.key === selectedUnescoId);
+      if (selectedSite && selectedSite.regionId === regionId) {
+        return { fill: '#fde68a' }; // highlighted region in warm amber-200
+      }
+      return { fill: '#f8f6f0' }; // clean off-white background
     } else if (mode === 'quiz' && quizStarted && !quizFinished) {
       const correctAnswerId = questions[currentQuestionIndex];
 
@@ -851,6 +1164,19 @@ export default function App() {
         return "region-path transition-all duration-300 stroke-[1px] stroke-stone-200 outline-none opacity-40 ";
       }
       return "region-path transition-all duration-300 cursor-pointer outline-none " + strokeClass;
+    }
+
+    if (mode === 'unesco') {
+      const selectedSite = UNESCO_DATA.find(s => s.key === selectedUnescoId);
+      let strokeClass = "stroke-stone-300 ";
+      if (selectedUnescoId) {
+        if (selectedSite && selectedSite.regionId === regionId) {
+          strokeClass = "stroke-amber-600 stroke-[1.5px] ";
+        } else {
+          return "region-path transition-all duration-300 stroke-[1px] stroke-stone-200 outline-none opacity-40 ";
+        }
+      }
+      return baseClass + strokeClass;
     }
 
     if (mode === 'quiz') {
@@ -934,6 +1260,14 @@ export default function App() {
             >
               COSTE D'ITALIA
             </button>
+            <button 
+              onClick={() => { if (!quizStarted) { setMode('unesco'); setSelectedRegionId(null); } }}
+              disabled={quizStarted}
+              className={`px-4 py-1.5 rounded text-xs font-semibold font-mono tracking-wider transition-all cursor-pointer
+                ${mode === 'unesco' ? 'bg-amber-700 text-white shadow-sm' : 'text-stone-500 hover:text-stone-850 disabled:opacity-50'}`}
+            >
+              SITI UNESCO
+            </button>
           </div>
         </div>
       </header>
@@ -968,6 +1302,13 @@ export default function App() {
               ${mode === 'coasts' ? 'bg-amber-700 text-white font-extrabold shadow-sm' : 'text-stone-500'}`}
           >
             COSTE
+          </button>
+          <button 
+            onClick={() => setMode('unesco')}
+            className={`flex-1 text-center py-2 rounded-lg text-xs font-bold tracking-wider transition-all cursor-pointer
+              ${mode === 'unesco' ? 'bg-amber-700 text-white font-extrabold shadow-sm' : 'text-stone-500'}`}
+          >
+            UNESCO
           </button>
         </div>
       )}
@@ -1234,6 +1575,88 @@ export default function App() {
                             className="font-mono text-[7px] fill-sky-800 font-extrabold"
                           >
                             {label.value}
+                          </text>
+                        </g>
+                      );
+                    })()}
+                  </>
+                )}
+
+                {/* UNESCO sites overlay */}
+                {mode === 'unesco' && (
+                  <>
+                    {UNESCO_DATA.map((site) => {
+                      const isSelected = selectedUnescoId === site.key;
+                      return (
+                        <g
+                          key={site.key}
+                          transform={`translate(${site.x}, ${site.y})`}
+                          className="cursor-pointer pointer-events-auto group"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedUnescoId(site.key);
+                            setIsMinimized(false);
+                            playSynthSound('correct');
+                          }}
+                        >
+                          {/* Outer pulse circle for selected site */}
+                          {isSelected && (
+                            <circle
+                              r="12"
+                              fill="none"
+                              stroke="#d97706"
+                              strokeWidth="1.5"
+                              opacity="0.8"
+                              className="animate-ping"
+                            />
+                          )}
+                          {/* Main pin marker */}
+                          <circle
+                            r={isSelected ? "6" : "4"}
+                            fill={isSelected ? "#d97706" : "#f59e0b"}
+                            stroke={isSelected ? "#fff" : "#b45309"}
+                            strokeWidth={isSelected ? 1.8 : 0.8}
+                            className="transition-all duration-300 shadow-md group-hover:scale-125"
+                          />
+                        </g>
+                      );
+                    })}
+
+                    {/* Selected UNESCO Label Overlay */}
+                    {selectedUnescoId && (() => {
+                      const site = UNESCO_DATA.find(s => s.key === selectedUnescoId);
+                      if (!site) return null;
+                      return (
+                        <g 
+                          transform={`translate(${site.x}, ${site.y - 12})`}
+                          className="cursor-pointer select-none opacity-95 hover:opacity-100 transition-opacity pointer-events-auto"
+                        >
+                          <rect
+                            x="-60"
+                            y="-18"
+                            width="120"
+                            height="28"
+                            rx="5"
+                            fill="#fcfbf8"
+                            stroke="#d97706"
+                            strokeWidth="1.2"
+                            className="shadow-sm"
+                          />
+                          <text
+                            x="0"
+                            y="-6"
+                            textAnchor="middle"
+                            className="font-bold text-[7.5px] fill-stone-900 font-sans"
+                          >
+                            {site.name}
+                          </text>
+                          <text
+                            x="0"
+                            y="5"
+                            textAnchor="middle"
+                            className="font-mono text-[6.5px] fill-amber-700 font-extrabold"
+                          >
+                            UNESCO {site.year}
                           </text>
                         </g>
                       );
@@ -1821,6 +2244,152 @@ export default function App() {
                   {selectedRegionId && (
                     <button
                       onClick={() => setSelectedRegionId(null)}
+                      className="w-full mt-4 py-2 bg-stone-100 border border-stone-200 rounded-xl text-xs font-mono text-stone-500 hover:text-stone-850 hover:border-stone-300 transition-all cursor-pointer pointer-events-auto"
+                    >
+                      Rilascia Selezione
+                    </button>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+
+          {/* UNESCO SITI PANEL */}
+          {mode === 'unesco' && (
+            <div className="glass-panel rounded-2xl p-4 md:p-6 flex flex-col justify-between pointer-events-auto transition-all duration-300 shadow-lg md:shadow-sm">
+              {isMinimized ? (
+                <div 
+                  onClick={() => setIsMinimized(false)}
+                  className="flex items-center justify-between cursor-pointer w-full"
+                >
+                  <div className="flex items-center gap-2">
+                    <Award size={16} className="text-amber-700" />
+                    <span className="text-xs font-bold text-stone-900">
+                      {selectedUnescoId 
+                        ? `UNESCO: ${UNESCO_DATA.find(s => s.key === selectedUnescoId)?.name}` 
+                        : "Siti UNESCO: 30 Patrimoni Mondiali"
+                      }
+                    </span>
+                  </div>
+                  <ChevronUp size={16} className="text-stone-500" />
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-start justify-between border-b border-stone-100 pb-2 mb-3">
+                    <div>
+                      <span className="text-[10px] font-mono text-amber-800 font-extrabold tracking-wider uppercase flex items-center gap-1">
+                        <Award size={12} /> Patrimonio dell'Umanità
+                      </span>
+                      <h2 className="text-xl md:text-2xl font-black tracking-tight text-stone-900 mt-0.5 font-heading">Siti UNESCO</h2>
+                    </div>
+                    <button 
+                      onClick={() => setIsMinimized(true)}
+                      className="p-1 hover:bg-stone-100 rounded-full transition-colors cursor-pointer text-stone-500"
+                      title="Riduci pannello"
+                    >
+                      <ChevronDown size={18} />
+                    </button>
+                  </div>
+                  
+                  <AnimatePresence mode="wait">
+                    {selectedUnescoId ? (() => {
+                      const site = UNESCO_DATA.find(s => s.key === selectedUnescoId);
+                      if (!site) return null;
+                      return (
+                        <motion.div
+                          key={selectedUnescoId}
+                          initial={{ opacity: 0, y: 15 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -15 }}
+                          className="space-y-4 flex-1 overflow-y-auto"
+                        >
+                          <div>
+                            <span className="text-[10px] font-mono text-amber-850 font-extrabold tracking-wider uppercase">
+                              {site.region}
+                            </span>
+                            <h2 className="text-xl md:text-2xl font-extrabold tracking-tight text-stone-900 mt-0.5 font-heading">
+                              {site.name}
+                            </h2>
+                            <p className="text-xs italic text-stone-500 font-sans mt-0.5">
+                              {site.englishName}
+                            </p>
+                          </div>
+
+                          <div className="space-y-3">
+                            {/* Year of Inscription Card */}
+                            <div className="bg-amber-50/50 border border-amber-900/5 rounded-xl p-3 space-y-1.5">
+                              <span className="text-[9px] font-mono text-amber-850 uppercase tracking-widest flex items-center gap-1.5 font-black">
+                                <Award size={11} className="text-amber-700" /> Anno di Iscrizione
+                              </span>
+                              <div className="text-lg font-extrabold text-amber-950">
+                                {site.year}
+                              </div>
+                              <div className="w-full bg-stone-200/60 h-1.5 rounded-full overflow-hidden">
+                                <div 
+                                  className="bg-amber-700 h-full rounded-full transition-all duration-550" 
+                                  style={{ 
+                                    width: `${Math.max(10, ((site.year - 1979) / (2026 - 1979)) * 100)}%` 
+                                  }}
+                                />
+                              </div>
+                              <div className="flex justify-between text-[7px] font-mono text-stone-400">
+                                <span>Primo Sito (1979)</span>
+                                <span>2026</span>
+                              </div>
+                            </div>
+
+                            {/* Description */}
+                            <div className="bg-stone-50/40 border border-stone-200/40 rounded-xl p-3 text-xs font-sans text-stone-600 leading-relaxed max-h-[16vh] md:max-h-none overflow-y-auto">
+                              {site.desc}
+                            </div>
+                          </div>
+                        </motion.div>
+                      );
+                    })() : (
+                      <div className="space-y-4 flex-1 flex flex-col min-h-0">
+                        <p className="text-[11px] text-stone-500 font-sans hidden md:block leading-relaxed">
+                          L'Italia ospita il maggior numero di patrimoni dell'umanità UNESCO al mondo. Questa mappa evidenzia 30 dei siti culturali e naturali più straordinari della penisola.
+                        </p>
+
+                        {/* Scrollable list of UNESCO sites */}
+                        <div className="flex-1 overflow-y-auto space-y-2 max-h-[28vh] md:max-h-[50vh] pr-1 scrollbar-thin">
+                          <div className="space-y-2">
+                            <h3 className="text-[9px] font-mono text-stone-500 uppercase tracking-widest font-black flex items-center gap-1.5">
+                              🏛️ Indice dei Patrimoni UNESCO
+                            </h3>
+                            <div className="space-y-2">
+                              {UNESCO_DATA.map((site) => (
+                                <div 
+                                  key={site.key} 
+                                  onClick={() => {
+                                    setSelectedUnescoId(site.key);
+                                    playSynthSound('correct');
+                                  }}
+                                  className="bg-stone-50 border border-stone-200/60 rounded-xl p-2.5 space-y-1 hover:border-amber-600/35 transition-all cursor-pointer"
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-xs font-bold text-stone-900 truncate pr-2">
+                                      {site.name}
+                                    </span>
+                                    <span className="text-[8px] font-mono font-bold text-amber-800 bg-amber-100/60 px-1.5 py-0.5 rounded-full shrink-0">
+                                      {site.year}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center justify-between text-[8px] font-mono text-stone-400">
+                                    <span>Regione: {site.region}</span>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </AnimatePresence>
+
+                  {selectedUnescoId && (
+                    <button
+                      onClick={() => setSelectedUnescoId(null)}
                       className="w-full mt-4 py-2 bg-stone-100 border border-stone-200 rounded-xl text-xs font-mono text-stone-500 hover:text-stone-850 hover:border-stone-300 transition-all cursor-pointer pointer-events-auto"
                     >
                       Rilascia Selezione
